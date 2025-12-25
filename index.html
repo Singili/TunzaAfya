@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Afya Asilia - Natural Wellness</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="tailwind.js"></script>
   <style>
     /* Product cards: fixed height box, fill the box while keeping aspect and center the crop */
     .product-img {
@@ -35,6 +36,12 @@
       overflow: hidden;
     }
 
+    /* Modal description scroll behavior */
+    #modalDesc {
+      max-height: 40vh;
+      overflow: auto;
+    }
+
   .glass { background: rgba(255,255,255,0.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
     #waFloat { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
   </style>
@@ -42,26 +49,45 @@
 <body class="bg-gray-50 text-gray-800">
   <!-- Nav -->
   <header class="bg-green-700 text-white">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between relative">
       <div class="flex items-center gap-3">
   <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.webp" alt="Afya Asilia logo"></div>
         <div>
-          <h1 class="text-lg font-semibold">Afya Asilia</h1>
-          <p class="text-xs opacity-90">Natural wellness • Authentic Eternal International products</p>
+          <h1 id="siteTitle" class="text-lg font-semibold">Afya Asilia</h1>
+          <p id="siteTag" class="text-xs opacity-90">Natural wellness • Authentic Eternal International products</p>
         </div>
       </div>
+      <!-- Desktop nav (hidden on small screens) -->
       <nav class="hidden md:flex gap-6 items-center text-sm">
-        <a href="#about-us" class="hover:underline">About</a>
-        <a href="#what-we-do" class="hover:underline">What we do</a>
-        <a href="#products" class="hover:underline">Products</a>
-        <a href="#contact" class="hover:underline">Contact</a>
+        <a id="navAbout" href="#about-us" class="hover:underline">About</a>
+        <a id="navWhat" href="#what-we-do" class="hover:underline">What we do</a>
+        <a id="navProducts" href="#products" class="hover:underline">Products</a>
+        <a id="navContact" href="#contact" class="hover:underline">Contact</a>
       </nav>
+      <!-- Mobile menu button (visible on small screens) -->
+      <div class="md:hidden flex items-center">
+        <button id="menuBtn" aria-controls="mobileNav" aria-expanded="false" class="inline-flex items-center justify-center p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white" title="Open menu">
+          <!-- Hamburger icon -->
+          <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <!-- Close icon (hidden by default) -->
+          <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <!-- Mobile nav (hidden by default) -->
+      <div id="mobileNav" class="md:hidden hidden absolute right-4 top-full mt-2 w-56 bg-green-700 text-white rounded-md shadow-lg z-40 overflow-hidden">
+        <div class="flex flex-col py-2">
+          <a id="mobileAbout" href="#about-us" class="px-4 py-2 hover:bg-green-600">About</a>
+          <a id="mobileWhat" href="#what-we-do" class="px-4 py-2 hover:bg-green-600">What we do</a>
+          <a id="mobileProducts" href="#products" class="px-4 py-2 hover:bg-green-600">Products</a>
+          <a id="mobileContact" href="#contact" class="px-4 py-2 hover:bg-green-600">Contact</a>
+        </div>
+      </div>
       <div class="flex items-center gap-2">
   <select id="langSwitcher" class="px-2 py-1 rounded-md border bg-white text-green-700" title="Choose language">
           <option value="en">English</option>
-          <option value="sw">Swahili</option>
+          <option value="sw" selected>Swahili</option>
         </select>
-        <a href="https://wa.me/255692538955" class="ml-3 inline-flex items-center gap-2 bg-white text-green-700 px-3 py-2 rounded-md text-sm font-medium">Order on WhatsApp</a>
+        <a id="headerOrderBtn" href="https://api.whatsapp.com/send?phone=255692538955&text=Hello,%20I%20want%20to%20order%20from%20Afya%20Asilia" class="ml-3 inline-flex items-center gap-2 bg-white text-green-700 px-3 py-2 rounded-md text-sm font-medium">Order on WhatsApp</a>
       </div>
     </div>
   </header>
@@ -77,7 +103,7 @@
       </div>
     </div>
     <div class="rounded-lg overflow-hidden shadow-lg">
-      <img src="images/logo.webp" alt="Afya Asilia" class="w-full h-64 md:h-80 object-cover" />
+      <img src="images/eternal-logo.png" alt="Afya Asilia" class="w-full h-100 md:h-100 object-cover" />
     </div>
   </section>
 
@@ -116,7 +142,7 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <h3 class="text-2xl font-semibold text-green-800" id="productsTitle">Our Products</h3>
       <div class="flex gap-3 w-full md:w-auto">
-        <input id="searchInput" type="search" placeholder="Search products, categories, descriptions..." class="flex-1 md:flex-none px-3 py-2 rounded-md border" />
+  <input id="searchInput" type="search" placeholder="Search products, categories, descriptions..." class="flex-1 md:flex-none px-3 py-2 rounded-md border bg-white text-gray-800 placeholder-gray-500 shadow-sm border-green-300 focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-600" />
   <select id="categoryFilter" class="px-3 py-2 rounded-md border" title="Filter by category">
           <option value="all">All Categories</option>
           <option value="weight loss">Weight Loss</option>
@@ -125,7 +151,7 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
           <option value="energy">Energy</option>
         </select>
       </div>
-    </div>
+    </div>                                                      
 
     <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6"></div>
   </section>
@@ -150,11 +176,11 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
       </div>
 
       <div class="p-6 bg-gradient-to-br from-green-50 to-white rounded-lg shadow">
-        <h4 class="text-xl font-semibold text-green-800">Our Location & Hours</h4>
-        <p class="mt-2 text-gray-600">Based in Tanzania / East Africa. Local delivery available. For shipping outside local area, contact us on WhatsApp.</p>
+        <h4 id="locationTitle" class="text-xl font-semibold text-green-800">Our Location & Hours</h4>
+        <p id="locationDesc" class="mt-2 text-gray-600">Based in Tanzania / East Africa. Local delivery available. For shipping outside local area, contact us on WhatsApp.</p>
         <div class="mt-4">
-          <p class="text-sm text-gray-600">Open: Mon–Sun • 24 hrs</p>
-          <p class="text-sm text-gray-600">Phone/WhatsApp: +255 692 538 955</p>
+          <p id="openHours" class="text-sm text-gray-600">Open: Mon–Sun • 24 hrs</p>
+          <p id="locationPhone" class="text-sm text-gray-600">Phone/WhatsApp: +255 692 538 955</p>
         </div>
       </div>
     </div>
@@ -164,22 +190,24 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
   <footer class="bg-green-700 text-white mt-8">
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-start md:items-center text-sm gap-4 md:gap-0">
       <div>
-        <h5 class="font-semibold">Contact Us</h5>
-        <p>Phone/WhatsApp: +255 692 538 955</p>
-        <p>Email: info@afyaasilia.com</p>
+        <h5 id="footerContactTitle" class="font-semibold">Contact Us</h5>
+        <p id="footerPhone">Phone/WhatsApp: +255 692 538 955</p>
+        <p id="footerEmail">Email: afyaasilia@gmail.com</p>
+        <p id="footerFacebook"><a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Afya Asilia</a></p>
+        <p id="footerInstagram"><a href="#" class="underline">Instagram: afya_asilia</a></p>
       </div>
       <div>
-        <h5 class="font-semibold">Location</h5>
-        <p>Tanzania, East Africa</p>
+        <h5 id="footerLocationTitle" class="font-semibold">Location</h5>
+        <p id="footerLocationText">Tanzania, East Africa</p>
       </div>
       <div>
-        <p>© Afya Asilia — Authorized Eternal International Partner</p>
+        <p id="footerCopyright">© Afya Asilia — Authorized Eternal International Partner</p>
       </div>
     </div>
   </footer>
 
   <!-- WhatsApp floating button -->
-  <a id="waFloat" href="https://wa.me/255692538955" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
+  <a id="waFloat" href="https://api.whatsapp.com/send?phone=255692538955&text=Hello,%20I%20want%20to%20order%20from%20Afya%20Asilia" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
 
   <!-- Product details modal -->
   <div id="productModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
@@ -192,7 +220,8 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
       <img id="modalImg" src="" alt="" class="w-full h-64 object-cover"/>
       <div class="p-4">
         <p id="modalPrice" class="font-medium text-gray-700"></p>
-        <p id="modalDesc" class="mt-2 text-gray-600"></p>
+        <!-- Make the description area scrollable when content is long -->
+  <p id="modalDesc" class="mt-2 text-gray-600"></p>
         <div class="mt-4 flex gap-2">
           <a id="modalOrder" href="#" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">Order on WhatsApp</a>
         </div>
@@ -210,7 +239,12 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
       img.alt = p.name;
   document.getElementById('modalPrice').textContent = p.price;
   document.getElementById('modalDesc').textContent = getProductDesc(p);
-  document.getElementById('modalOrder').href = 'https://api.whatsapp.com/send?phone=255692538955&text=' + encodeURIComponent(getWhatsAppPrefill(p));
+  const modalOrder = document.getElementById('modalOrder');
+  if(modalOrder){
+    modalOrder.href = 'https://api.whatsapp.com/send?phone=255692538955&text=' + encodeURIComponent(getWhatsAppPrefill(p));
+    // Localize modal order button label
+    modalOrder.textContent = (getCurrentLang() === 'sw') ? 'Agiza kwenye WhatsApp' : 'Order on WhatsApp';
+  }
       document.getElementById('productModal').classList.remove('hidden');
     }
 
@@ -238,12 +272,23 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
       return `I'm interested in ${p.name}`;
     }
     const products = [
-      { id: 1, name: 'Chrysanthemum Tea', category: 'weight loss', price: 'Tsh 65,000', desc_en: 'Tea for reducing belly fat, detox and metabolism support. Lorem ipsum dolor sit amet consectetur adipisicing elit.', desc_sw: 'Chai ya Chrysanthemum kwa kupunguza mafuta ya tumbo, kusafisha mwili na kusaidia kimetabolism.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' },
-      { id: 2, name: 'Detox Formula', category: 'detox', price: 'Tsh 55,000', desc_en: 'Full body detox and liver support.', desc_sw: 'Dawa ya kusafisha mwili wote na kuunga mkono ini.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' },
-      { id: 3, name: 'Immune Booster', category: 'immunity', price: 'Tsh 45,000', desc_en: 'Increases resistance and supports immune function.', desc_sw: 'Inaimarisha kinga ya mwili na kuongeza upinzani.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' },
-      { id: 4, name: 'Energy Capsules', category: 'energy', price: 'Tsh 50,000', desc_en: 'Natural energy support for daily vitality.', desc_sw: 'Msaada wa nishati asilia kwa uhai wa kila siku.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' },
-      { id: 5, name: 'Slim Tea Pack', category: 'weight loss', price: 'Tsh 70,000', desc_en: 'Complementary tea pack for slimming and appetite control.', desc_sw: 'Pakka ya chai kusaidia kupunguza uzito na kudhibiti hamu ya kula.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' },
-      { id: 6, name: 'Liver Support', category: 'detox', price: 'Tsh 60,000', desc_en: 'Herbal support for liver health and cleansing.', desc_sw: 'Msaada wa mimea kwa afya ya ini na kusafisha.', img: 'images/4dc1fdde1b90454dac1b54c82a42080f.png' }
+  { id: 1, name: 'Chrysanthemum Tea', category: 'weight loss', price: 'Tsh 65,000', desc_en: 'It is a type of professionally blended plants (Chrysanthemum and other plant species) prepared for use as tea leaves. These leaves have a high capacity to dissolve body fat and prevent fat from being stored in large quantities within body cells. These leaves contain essential nutrients such as vitamins B1 and C to help digest food, burn fat, and lead to faster weight loss. Research shows that Chrysanthemum tea leaves have a significant ability to control and burn fat extensively. It is an easy way to lose weight for people such as artists, those preparing for marriage, models, and anyone needing to lose weight in a good, safe, and faster way. These leaves also help stimulate the digestive system, especially for fatty foods, and help in achieving soft stools. Additionally, they help remove toxins resulting from various bodily systems—that is, the ‘elimination of free radicals’—which cause skin damage, premature aging, and body organs to become tired and fail to function with high efficiency.', desc_sw: 'Ni aina ya mimea iliyochanganywa pamoja kitaalamu (Chrysanthemum and other plant species) na kuandaliwa kwa ajili ya kutumika kama majani ya chai. Ni majani ambayo yana uwezo mkubwa wa kuyeyusha mafuta mwilini na kutoruhusu mafuta kuhifadhiwa kwa wingi katika seli za mwili. Majani haya yana madini muhimu kama, vitamini B1 na C kwa ajili ya kusaidia kuyeyusha chakula, kuchoma mafuta na kupelekea kupunguza unene kwa haraka zaidi. Tafiti zinaonyesha kwamba majani ya chai ya Chrysanthemum yana uwezo mkubwa wa kudhibiti mafuta na kuyachoma kwa kiasi kikubwa. Ni njia rahisi ya kupunguza unene kwa watu kama wasanii, wanaotarajia kufunga ndoa, wanamitindo na yeyote anayehitaji kupunguza uzito kwa njia nzuri, salama na ya haraka zaidi. Majani haya pia yanasaidia kuchochea mfumo wa uyeyushaji wa chakula hasa chenye asili ya mafuta na kusaidia kupata choo laini. Pia yanasaidia kuondoa sumu zitokanazo na mifumo mbalimbali ya kimwili yaani ‘elimination of free radicals’ ambazo huifanya ngozi kuharibika na mtu kuzeeka haraka pamoja na viungo vya mwili kuchoka na kushindwa kufanya kazi kwa ufanisi mkubwa.', img: 'images/chrysanthemum-tea.jpg' },
+
+      { id: 2, name: 'Purslane Tea', category: 'tea', price: 'Tsh 65,000', desc_en: 'Helps to purify the blood, produce a healthy amount of saliva, and reduce levels of sugar, toxins, and fat in the blood. It helps soften blood vessels in the lungs and enables blood to circulate well. It is an excellent tea when used by those with liver and lung problems resulting from the use of strong beverages. It can help treat internal injuries (in the liver), especially those caused by the long-term use of medical pills or medications. It is also good for children, the elderly, and people who do heavy work for a long time.', desc_sw: 'Dawa ya kusafisha damu, kuzalisha mate kwa kiasi kizuri na kupunguza kiwango cha sukari, sumu na mafuta katika damu. Husaidia kulainisha mishipa ya damu katika ini na mapafu na kuwezesha damu kusafiri vizuri mwilini. Watumiaji: (1) Mtu mwenye matatizo ya ini yanayotokana na utumiaji wa vinywaji vikali. (2) Kutibu majeraha yaliyopo katika mini hasa yaliyotokana na utumiaji tiba ya vidonge au madawa kwa kipindi kirefu. (3) Ni nzuri kwa watoto, wazee na watu wanaofanya kazi ngumu kwa muda mrefu.', img: 'images/purselate-tea.jpg' },
+
+  { id: 3, name: 'Antilipemic Tea', category: 'tea', price: 'Tsh 65,000', desc_en: 'Regulating body fat levels is essential for the body to function efficiently. Excess fat is a major cause of health issues like heart disease and burdened or ruptured blood vessels. Antilipemic is a special natural herbal blend that creates this green tea, containing Gynostemma, Cassia seed, Lotus leaf, prepared fleece flower root, other pure Chinese herbs, and dried fruit peels. This blend allows the leaves to quickly dissolve excess fat, aid digestion, regulate body temperature, and strengthen organs like the stomach, spleen, and liver. These leaves also help the body eliminate free radicals and food toxins while providing energy. When used correctly, they help reduce belly size and dissolve extra body fat. The herbal blend has a pleasant aroma and taste, providing a relaxing experience for the drinker. Proper use helps dissolve fat quickly and keeps blood vessels hydrated to prevent serious health risks. These leaves also promote healthy skin, good eyesight, healthy hair growth (delaying graying), and stronger teeth.', desc_sw: 'Kurekebisha kiwango cha mafuta katika mwili ni jambo la muhimu na la msingi kwa mwili kuweza kufanya kazi kwa ufanisi mkubwa. Mafuta kuzidi mwilini ndio chanzo kikuu cha matatizo mengi ya kiafya kama maradhi ya moyo, ubongo na mishipa ya damu kulemewa na kuweza hata kupasuka. Antilipemic yana mchanganyiko maalumu wa mimea ya asili ambayo kwa pamoja inatengeneza chai hii ya kijani (green tea). Chai hii inatokana na mimea kama Gynostemma, Cassia seed, Lotus leaf, prepared fleece flower root, other pure Chinese herbal medicines pamoja na maganda ya matunda mbalimbali yaliyokaushwa. Mchanganyiko huu unayafanya majani haya kuweza kuyeyusha mafuta yaliyozidi mwilini kwa haraka, kusaidia mfumo wa uyeyushaji wa chakula, kurekebisha joto la mwili na kuimarisha viungo kama tumbo, bandama na ini. Majani haya pia yanaupa mwili uwezo mkubwa wa kuondosha sumu zinazozalishwa na seli hai za mwili yaani ‘free radicals’. Yana uwezo pia wa kuondoa sumu zinazotokana na vyakula ‘food toxins’ na kuupa mwili nguvu na uwezo mzuri wa kufanya kazi. Yakitumika kwa usahihi yanasaidia kukata tumbo na kuyeyusha mafuta ya ziada katika nyama za mwili. Mchanganyiko wa mimea katika majani haya huyafanya kuwa na harufu na ladha nzuri kwa mnywaji na kuweza kumfanya ajisikie raha mustarehe anapokunywa chai hii. Matumizi sahihi ya chai hii yanamsaidia mtumiaji kuweza kuyeyusha mafuta haraka na kuifanya mishipa ya damu kuwa na unyevu unaotakiwa (yaani isikauke na kuweza kuleta madhara makubwa kiafya). Majani haya yanasaidia kuifanya ngozi kuwa na muonekano mzuri, macho kuona vizuri, nywele kukua vizuri (kuchelewesha na kupunguza nywele kubadilika rangi na kuwa na mvi nyingi), na meno kuwa imara zaidi.', img: 'images/antilipemic-tea.jpg' },
+
+  { id: 4, name: 'Middle Aged', category: 'energy', price: 'Tsh 50,000', desc_en: 'A special nutritional blend containing various Vitamins and Minerals that are not produced by the body and are essential for the growth of body cells. This supplement contains minerals such as Selenium, Iron, Zinc, and Magnesium, all of which are important for the human body. Vitamin A: Helps boost body immunity and improves eyesight, Vitamin B1: Assists in the digestive system for carbohydrate foods, itamin B2 (Riboflavin): Helps strengthen the skin, eyes, and mouth, Vitamin C: Aids in food digestion and growth (especially for children), relieves leg pain, prevents bleeding gums and slow-healing wounds, and prevents low immunity, Vitamin E: Assists in the development of reproductive organs and the growth of a baby in the womb. It is beneficial for patients with skin conditions, those without a proper eating schedule, and those who want to have a healthy glow and attractive skin. On average, there are at least 13 vitamins most essential for the human body needs. These include Vitamin A, B Vitamins (Thiamine, Riboflavin, Niacin, Pantothenic Acid, Biotin, Vitamin B-6, Vitamin B-12, and Folate), Vitamin C, Vitamin D, Vitamin E, and Vitamin K.', desc_sw: 'Lishe maalum yenye mchanganyiko wa Vitamini na Madini mbalimbali ambayo hayazalishwi mwilini na ni muhimu kwa ukuaji wa seli za mwili. Lishe hii ina madini kama Selenium, Iron, Zinc na Magnesium ambayo yote ni muhimu katika mwili wa mwanadamu. Vitamini ‘A’ Husaidia kuongeza kinga mwilini na macho kuona vizuri. Vitamin ‘B1’ inasaidia katika mfumo wa uyeyushaji wa chakula cha wanga. Vitamin ‘B2’ Riboflavin husaidia kuimarisha ngozi macho na mdomo. Vitamin ‘C’ husaidia katika uyeyushaji wa chakula na ukuaji (hasa kwa watoto), kuondoa maumivu ya miguu, fizi kutoka damu, vidonda visivyopona haraka na kinga kushuka chini ya kiwango. Vitamin ‘E’ husaidia katika kukua kwa viungo vya uzazi na pamoja na ukuaji wa mtoto anapokuwepo tumboni. Ni nzuri ikitumiwa na wagonjwa wa ngozi, wasio na utaratibu mzuri wa kula na wanaotaka kuwa na mvuto na ngozi ya kuvutia. Kwa wastani kuna Vitamini zisizopungua 13 muhimu zaidi kwa mahitaji ya mwili wa binadamu. Hii inajumuisha Vitamin A, B Vitamins (Thiamine, Riboflavin, Niacin, Pantothenic Acid, Biotin, Vitamin B-6, Vitamin B-12 and Folate), Vitamin C, Vitamin D, Vitamin E na Vitamin K.', img: 'images/middle-aged.jpg' },
+
+      { id: 5, name: 'Propolis Soft Capsule', category: 'weight loss', price: 'Tsh 70,000', desc_en: 'This is a nutritional product derived from black stingless bee honey, containing over 120 Flavonoid nutrients. It helps heal body systems damaged by disease by stimulating the immune system. It has the ability to help the immune system fight various diseases (such as those of the liver, kidneys, stomach, and bladder). It helps prevent blood vessels from becoming damaged or dry. It can help dissolve tumors in early stages and prevent mature ones from growing further. It can also remove harmful minerals from the body (such as Mercury). It is beneficial for patients with stomach ulcers, liver issues, any type of swelling/tumors, diabetes, brain-related ailments, and those with low immunity (the elderly, young children, pregnant women, and those who have recently given birth).', desc_sw: 'Ni lishe inayotokana na asali ya nyuki wadogo weusi yenye virutubisho zaidi ya 120 vya Flavonoids. Husaidia kuponya mifumo ya mwili iliyoharibiwa na maradhi kwa kuzalisha kinga ya mfumo wa kinga ya mwili. Ina uwezo wa kusaidia kinga ya kupambana na maradhi mbalimbali (kama ya ini, figo, tumbo, kibofu cha mkojo). Inasaidia mishipa ya damu isiharibike na kukauka. Inaweza kusaidia kuyeyusha uvimbe katika hatua za awali, na ule uliokomaa usiendelee kukua zaidi. Pia inaweza kuondoa madini yasiyofaa mwilini (madini ya Zebaki). Ni nzuri kutumiwa na wagonjwa wa vidonda vya tumbo, ini, wanaosumbuliwa na uvimbe wa aina yoyote, kisukari, wenye matatizo na maradhi ya ubongo, wasio na kinga ya kutosha (wazee, watoto wadogo, kina mama wajawazito na waliotoka kujifungua).', img: 'images/propolis-soft-cap.jpg' },
+
+      { id: 6, name: 'Calcium And Protein Powder', category: 'detox', price: 'Tsh 60,000', desc_en: 'Protein is a very important food for the human body. This protein supplement is derived from soy flour, wheat, etc., and is enriched with high amounts of Calcium. It is a good supplement for people of all ages. Groups with the greatest need include pregnant women, breastfeeding mothers, young children, the elderly, and the sick. These groups have a high demand for protein because deficiency can weaken the immune system, leading to heart disease or other issues caused by a lack of essential minerals or nutrients. For vegetarians, this is an excellent supplement as it provides a safer plant-based alternative for obtaining protein.', desc_sw: 'Protini ni chakula muhimu sana katika mwili wa binadamu. Lishe hii ya protini inatokana unga wa soya, ngano, n.k. ni lishe iliyochanganywa kwa kuongezewa madini ya chokaa ‘Calcium’ kwa wingi sana. Ni lishe nzuri kutumiwa na watu wa rika zote. Kundi la watu wenye mahitaji makubwa ni akina mama wajawazito, wanaonyonyesha, watoto wadogo, wazee na wagonjwa. Makundi haya yana mahitaji makubwa ya Protein, sababu yana upungufu mkubwa wa kinga na kusababisha mwili kuwa na uwezo mdogo wa kinga na kusababisha maradhi ya moyo, walioathiriwa na upungufu wa madini au virutubisho muhimu mwilini. Kwa wale wasio tumia nyama (vegetarians), hii ni lishe nzuri kwani inasaidia kupata protini mbadala itokanayo na mimea ambayo ni salama zaidi.', img: 'images/Calcium&Protein-powder.jpg' },
+
+       { id: 7, name: 'Shuang Tiao Shun Zhi Electuary', category: 'detox', price: 'Tsh 60,000', desc_en: 'This product is a special ‘isomalto-oligosaccharide’ nutrition that helps remove toxins resulting from water, food, air, and drug use in the body. This product has a great ability to remove large amounts of toxins in a short time. It helps clean the digestive system, especially the stomach, keeping it in a better state. It is good for people with stomach ulcers, gas and acid, stomach cramps, or diarrhea. It also helps those with constipation or very dry stools. It empowers beneficial body bacteria (which aid the digestive system). Three weeks after using this product, body immunity increases tenfold, equivalent to the immunity of a 20-year-old. Results appear after one to three days, and the best results are seen after one to three weeks of use. Note: This product contains no fat, hormones, or added stimulants.', desc_sw: 'Bidhaa hii ni lishe maalum ya ‘isomalto-oligosaccharide’ inasaidia kuondoa sumu zinazotokana na maji, chakula, hewa, pamoja na matumizi ya madawa mwilini. bidhaa hii ina uwezo mkubwa wa kuondoa sumu kwa kiasi kikubwa na kwa muda mfupi. inasaidia kusafisha mfumo wa chakula hasa tumbo na kulifanya liwe katika hali nzuri zaidi. ni nzuri kwa watu wenye matatizo ya vidonda vya tumbo, tumbo kujaa gesi na asidi, tumbo kukata au tumbo la kuharisha. pia husaidia wasiopata choo au wanaopata choo katika hali ya ukavu sana. inasaidia kuwapa nguvu bacteria wa mwilini (ambao husaidia mfumo wa uyeyushaji wa chakula). wiki tatu baada ya kutumia bidhaa hii, kinga ya mwili huongezeka mara kumi zaidi, ikilinganishwa sawa na kinga ya kijana wa miaka 20. matokeo huonekana baada ya siku moja mpaka tatu na matokeo mazuri zaidi huwa ni baada ya matumizi ya wiki moja mpaka tatu. nb: bidhaa hii haina mafuta, homoni wala haijaongezewa kiambata chochote cha kuongeza nguvu.', img: 'images/shuang.png' },
+
+        { id: 8, name: 'Gyrophora Tea', category: 'detox', price: 'Tsh 60,000', desc_en: 'This product contains a blend of natural herbs such as the famous red mushroom known as Ganoderma lucidum, Cordyceps, and Ginseng. These plants have been used together to prepare these tea leaves, making them of the highest quality. These leaves have the ability to increase energy, boost immunity, and reduce physical fatigue. It has the capacity to regulate the body immune system. It is beneficial for those with chronic heart, lung, liver, spleen, and kidney problems. It also helps to cleanse and keep these organs in a state of balance. It is suitable for use by people with insufficient immunity and those with weak bodies due to long-term medication use, as well as those suffering from chronic diseases like cancer and tumors. These leaves also have a great ability to enhance the blood capacity to transport oxygen.', desc_sw: 'Bidhaa hii ina mchanganyiko wa mimea ya asili kama uyoga mwekundu maarufu kama Ganoderma lucidium, Cordyceps na Ginseng. Mimea hii kwa pamoja imetumika kuandaa majani haya ya chai na kuyafanya kuwa ni majani bora na mazuri zaidi. Majani haya yana uwezo wa kuongeza nguvu, kuongeza kinga na kupunguza uchovu wa mwili. Ina uwezo wa kurekebisha mfumo wa kinga mwilini. Ni nzuri kwa wenye matatizo sugu ya moyo, mapafu, ini, bandama na figo. Pia inasaidia kusafisha na kuviweka viungo hivyo katika hali ya usawa. Inafaa kutumiwa na watu wasio na kinga ya kutosha na walio na miili dhaifu sababu ya matumizi ya madawa kwa kipindi kirefu na wanaosumbuliwa na maradhi sugu kama kansa na uvimbe. Majani haya pia yana uwezo mkubwa wa kuongezea damu nguvu ya kusafirisha hewa ya oksijeni.', img: 'images/gyrophora-tea.jpg' },
+
+         { id: 9, name: 'Aloe Capsule Soft Capsule', category: 'detox', price: 'Tsh 60,000', desc_en: 'Protein is a very important food for the human body. This protein supplement is derived from soy flour, wheat, etc., and is enriched with high amounts of Calcium. It is a good supplement for people of all ages. Groups with the greatest need include pregnant women, breastfeeding mothers, young children, the elderly, and the sick. These groups have a high demand for protein because deficiency can weaken the immune system, leading to heart disease or other issues caused by a lack of essential minerals or nutrients. For vegetarians, this is an excellent supplement as it provides a safer plant-based alternative for obtaining protein.', desc_sw: 'Protini ni chakula muhimu sana katika mwili wa binadamu. Lishe hii ya protini inatokana unga wa soya, ngano, n.k. ni lishe iliyochanganywa kwa kuongezewa madini ya chokaa ‘Calcium’ kwa wingi sana. Ni lishe nzuri kutumiwa na watu wa rika zote. Kundi la watu wenye mahitaji makubwa ni akina mama wajawazito, wanaonyonyesha, watoto wadogo, wazee na wagonjwa. Makundi haya yana mahitaji makubwa ya Protein, sababu yana upungufu mkubwa wa kinga na kusababisha mwili kuwa na uwezo mdogo wa kinga na kusababisha maradhi ya moyo, walioathiriwa na upungufu wa madini au virutubisho muhimu mwilini. Kwa wale wasio tumia nyama (vegetarians), hii ni lishe nzuri kwani inasaidia kupata protini mbadala itokanayo na mimea ambayo ni salama zaidi.', img: 'images/aloe-cap.jpg' }
     ];
 
     const productGrid = document.getElementById('productGrid');
@@ -260,6 +305,10 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
         const card = document.createElement('div');
         card.className = 'bg-white rounded-lg shadow overflow-hidden';
   const waHref = 'https://api.whatsapp.com/send?phone=255692538955&text=' + encodeURIComponent(getWhatsAppPrefill(p));
+        // Localized labels for action buttons
+        const lang = getCurrentLang();
+        const orderLabel = (lang === 'sw') ? 'Agiza kwenye WhatsApp' : 'Order on WhatsApp';
+        const readLabel = (lang === 'sw') ? 'Soma zaidi' : 'Read more';
         card.innerHTML = `
           <img src="${p.img}" alt="${p.name}" class="w-full product-img" />
     <div class="p-4">
@@ -269,8 +318,8 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
             </div>
           <p class="text-sm text-gray-600 mt-2 line-clamp-2">${getProductDesc(p)}</p>
             <div class="mt-3 flex gap-2">
-              <a href="${waHref}" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">Order on WhatsApp</a>
-              <button class="px-3 py-2 bg-gray-100 text-green-700 rounded-md" onclick="showProductDetails(${p.id})">Read more</button>
+              <a href="${waHref}" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">${orderLabel}</a>
+              <button class="px-3 py-2 bg-gray-100 text-green-700 rounded-md" onclick="showProductDetails(${p.id})">${readLabel}</button>
             </div>
           </div>
         `;
@@ -316,12 +365,32 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
 
     // Language switcher
     const langSwitcher = document.getElementById('langSwitcher');
+    // Load saved language preference (if any) and apply before attaching listener
+    try {
+      const savedLang = localStorage.getItem('afya_lang');
+      if (savedLang) langSwitcher.value = savedLang;
+      else langSwitcher.value = 'sw';
+    } catch (e) {
+      /* localStorage may be unavailable in some environments; ignore */
+    }
+
     langSwitcher.addEventListener('change', function(){
       if(this.value === 'sw') {
         document.getElementById('heroTitle').textContent = 'Karibu Afya Asilia';
         document.getElementById('heroDesc').textContent = 'Virutubisho asilia kutoka Eternal International. Gundua suluhisho la asili kwa kudhibiti uzito, kusafisha mwili, kuimarisha kinga na ustawi wa kila siku.';
         document.getElementById('shopBtn').textContent = 'Nunua Bidhaa';
         document.getElementById('contactBtn').textContent = 'Wasiliana Nasi';
+        // Header localization - Swahili
+        const siteTitle = document.getElementById('siteTitle'); if(siteTitle) siteTitle.textContent = 'Afya Asilia';
+        const siteTag = document.getElementById('siteTag'); if(siteTag) siteTag.textContent = 'Afya ya asili • Bidhaa halali za Eternal International';
+        ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'].forEach(id=>{
+          const el = document.getElementById(id); if(!el) return; 
+          if(id.toLowerCase().includes('about')) el.textContent = 'Kuhusu';
+          else if(id.toLowerCase().includes('what')) el.textContent = 'Tunafanya Nini';
+          else if(id.toLowerCase().includes('products')) el.textContent = 'Bidhaa';
+          else if(id.toLowerCase().includes('contact')) el.textContent = 'Wasiliana';
+        });
+        const headerOrder = document.getElementById('headerOrderBtn'); if(headerOrder) headerOrder.textContent = 'Agiza kwenye WhatsApp';
   document.getElementById('aboutTitle').textContent = 'Kuhusu Afya Asilia';
   document.getElementById('aboutDesc').textContent = `Afya Asilia ni jukwaa mtandaoni la kuaminika lililojitolea kukuza ustawi wa asili, maisha yenye afya, na virutubisho vya ubora wa juu. Tunaamini afya ya kweli inaanza na asili, na dhamira yetu ni kuwasaidia watu kubadilisha maisha yao kupitia bidhaa za ustawi ambazo ni salama, zenye ufanisi na zinaungwa mkono na tafiti.
 
@@ -331,6 +400,17 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
         document.getElementById('productsTitle').textContent = 'Bidhaa Zetu';
         document.getElementById('contactTitle').textContent = 'Wasiliana / Agiza';
         document.getElementById('contactDesc').textContent = 'Jaza fomu au tumia WhatsApp kuweka oda. Tutajibu ndani ya masaa machache.';
+  // Localize placeholders
+  const search = document.getElementById('searchInput');
+  if (search) search.placeholder = 'Tafuta bidhaa, kategoria, maelezo...';
+  const nameInput = document.querySelector('input[name="name"]');
+  if (nameInput) nameInput.placeholder = 'Jina lako';
+  const phoneInput = document.querySelector('input[name="phone"]');
+  if (phoneInput) phoneInput.placeholder = 'Simu (k.m. +255...)';
+  const emailInput = document.querySelector('input[name="email"]');
+  if (emailInput) emailInput.placeholder = 'Barua pepe (hiari)';
+  const msgInput = document.querySelector('textarea[name="message"]');
+  if (msgInput) msgInput.placeholder = 'Ujumbe / Maelezo ya oda';
         // What we do - Swahili
         document.getElementById('what1Title').textContent = 'Sambaza Bidhaa Halali';
         document.getElementById('what1Desc').textContent = 'Tunachukua bidhaa halisi za Eternal International na kuhakikisha ubora na uhifadhi sahihi.';
@@ -338,16 +418,42 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
         document.getElementById('what2Desc').textContent = 'Tunakusaidia kuchagua ratiba inayofaa kwa malengo yako — kupunguza uzito, kusafisha mwili au kuongeza kinga.';
         document.getElementById('what3Title').textContent = 'Uwasilishaji Haraka & Msaada';
         document.getElementById('what3Desc').textContent = 'Uwasilishaji wa ndani, chaguzi za usafirishaji kitaifa, na msaada baada ya mauzo.';
+  // Footer localization - Swahili
+  document.getElementById('footerContactTitle').textContent = 'Wasiliana Nasi';
+  document.getElementById('footerPhone').textContent = 'Simu/WhatsApp: +255 692 538 955';
+  document.getElementById('footerEmail').textContent = 'Barua pepe: afyaasilia@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Afya Asilia</a>';
+  document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
+  document.getElementById('footerLocationTitle').textContent = 'Mahali';
+  document.getElementById('footerLocationText').textContent = 'Tanzania, Afrika Mashariki';
+  document.getElementById('footerCopyright').textContent = '© Afya Asilia — Mshirika rasmi wa Eternal International';
       } else {
         document.getElementById('heroTitle').textContent = 'Welcome to Afya Asilia';
         document.getElementById('heroDesc').textContent = 'Authentic herbal supplements from Eternal International. Discover natural solutions for weight management, detoxification, immunity support and everyday wellbeing.';
-        document.getElementById('shopBtn').textContent = 'Shop Products';
-        document.getElementById('contactBtn').textContent = 'Contact Us';
+  document.getElementById('shopBtn').textContent = 'Shop Products';
+  document.getElementById('contactBtn').textContent = 'Contact Us';
+  // Header localization - English
+  const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Afya Asilia';
+  const siteTagEn = document.getElementById('siteTag'); if(siteTagEn) siteTagEn.textContent = 'Natural wellness • Authentic Eternal International products';
+  const headerIds = ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'];
+  headerIds.forEach(id=>{ const el = document.getElementById(id); if(!el) return; if(id.toLowerCase().includes('about')) el.textContent = 'About'; else if(id.toLowerCase().includes('what')) el.textContent = 'What we do'; else if(id.toLowerCase().includes('products')) el.textContent = 'Products'; else if(id.toLowerCase().includes('contact')) el.textContent = 'Contact'; });
+  const headerOrderEn = document.getElementById('headerOrderBtn'); if(headerOrderEn) headerOrderEn.textContent = 'Order on WhatsApp';
   document.getElementById('aboutTitle').textContent = 'About Afya Asilia';
   document.getElementById('aboutDesc').textContent = 'Afya Asilia is a trusted online platform dedicated to promoting natural wellness, healthy living, and high-quality nutritional supplements. We believe that true health begins with nature, and our mission is to help individuals transform their lives through safe, effective, and science-supported wellness products.\n\nAs an authorized <b>Eternal International</b> sales partner, we provide reliable access to premium herbal products designed to support weight loss, detoxification, immune health, energy balance, and overall body wellness. Our goal is to empower families and communities with natural solutions that improve daily health and long-term wellbeing.\n\nAt Afya Asilia, we are committed to transparency, customer satisfaction, and honest guidance. We ensure that every customer receives genuine products, correct usage instructions, and ongoing support on their wellness journey. Your health is our priority.';
         document.getElementById('productsTitle').textContent = 'Our Products';
         document.getElementById('contactTitle').textContent = 'Get in touch / Order';
         document.getElementById('contactDesc').textContent = 'Fill the form or use WhatsApp to place your order. We will reply within a few hours.';
+  // Localize placeholders (English)
+  const searchEn = document.getElementById('searchInput');
+  if (searchEn) searchEn.placeholder = 'Search products, categories, descriptions...';
+  const nameInputEn = document.querySelector('input[name="name"]');
+  if (nameInputEn) nameInputEn.placeholder = 'Your name';
+  const phoneInputEn = document.querySelector('input[name="phone"]');
+  if (phoneInputEn) phoneInputEn.placeholder = 'Phone (e.g. +255...)';
+  const emailInputEn = document.querySelector('input[name="email"]');
+  if (emailInputEn) emailInputEn.placeholder = 'Email (optional)';
+  const msgInputEn = document.querySelector('textarea[name="message"]');
+  if (msgInputEn) msgInputEn.placeholder = 'Message / Order details';
         // What we do - English
         document.getElementById('what1Title').textContent = 'Supply Authentic Products';
         document.getElementById('what1Desc').textContent = 'We source original Eternal International supplements and ensure product authenticity and correct handling.';
@@ -355,10 +461,68 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
         document.getElementById('what2Desc').textContent = 'We help you pick the right regimen for your goals — weight loss, detox, or immune support.';
         document.getElementById('what3Title').textContent = 'Fast Delivery & Support';
         document.getElementById('what3Desc').textContent = 'Local delivery, nationwide shipping options, and after-sale support to track progress and answer questions.';
+  // Footer localization - English
+  document.getElementById('footerContactTitle').textContent = 'Contact Us';
+  document.getElementById('footerPhone').textContent = 'Phone/WhatsApp: +255 692 538 955';
+  document.getElementById('footerEmail').textContent = 'Email: afyaasilia@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Afya Asilia</a>';
+  document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
+  document.getElementById('footerLocationTitle').textContent = 'Location';
+  document.getElementById('footerLocationText').textContent = 'Tanzania, East Africa';
+  document.getElementById('footerCopyright').textContent = '© Afya Asilia — Authorized Eternal International Partner';
       }
       // Re-render products so descriptions update for the selected language
       filterProducts();
+      // Persist user choice
+      try { localStorage.setItem('afya_lang', this.value); } catch (e) {}
     });
+    // Apply the selected language on initial load (so saved/default language becomes active)
+    langSwitcher.dispatchEvent(new Event('change'));
+    // Mobile menu toggle behavior
+    (function(){
+      const menuBtn = document.getElementById('menuBtn');
+      const mobileNav = document.getElementById('mobileNav');
+      const menuIcon = document.getElementById('menuIcon');
+      const closeIcon = document.getElementById('closeIcon');
+      if (!menuBtn || !mobileNav) return;
+
+      function setOpen(open){
+        if(open){
+          mobileNav.classList.remove('hidden');
+          menuBtn.setAttribute('aria-expanded','true');
+          menuIcon.classList.add('hidden');
+          closeIcon.classList.remove('hidden');
+        } else {
+          mobileNav.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded','false');
+          menuIcon.classList.remove('hidden');
+          closeIcon.classList.add('hidden');
+        }
+      }
+
+      menuBtn.addEventListener('click', function(e){
+        const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+        setOpen(!isOpen);
+      });
+
+      // Close when clicking a link inside mobile nav
+      mobileNav.addEventListener('click', function(e){
+        if(e.target && e.target.tagName === 'A') setOpen(false);
+      });
+
+      // Close when clicking outside the mobile nav
+      document.addEventListener('click', function(e){
+        if(!mobileNav.classList.contains('hidden')){
+          const withinMenu = mobileNav.contains(e.target) || menuBtn.contains(e.target);
+          if(!withinMenu) setOpen(false);
+        }
+      });
+
+      // Close mobile menu when resizing to desktop widths
+      window.addEventListener('resize', function(){
+        if(window.innerWidth >= 768) setOpen(false);
+      });
+    })();
   </script>
 </body>
-</html
+</html>
