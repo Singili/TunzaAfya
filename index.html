@@ -456,10 +456,38 @@ At Afya Asilia, we are committed to transparency, customer satisfaction, and hon
 
     document.getElementById('contactForm').addEventListener('submit', function(e){
       e.preventDefault();
-      document.getElementById('formStatus').textContent = 'Sending...';
+      const name = this.elements['name']?.value || '';
+      const phone = this.elements['phone']?.value || '';
+      const email = this.elements['email']?.value || '';
+      const message = this.elements['message']?.value || '';
+      const statusEl = document.getElementById('formStatus');
+      statusEl.textContent = 'Opening WhatsApp...';
+
+      // Prepare submission object and save to localStorage (temporary admin store)
+      const submission = {
+        id: Date.now(),
+        name: name,
+        phone: phone,
+        email: email,
+        message: message,
+        method: 'whatsapp',
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      saveSubmission(submission);
+
+      // Build WhatsApp prefilled message and open
+      const header = (getCurrentLang() === 'sw') ? '*Ombi la Kuwasiliana na Afya Asilia:*' : '*Afya Asilia contact request:*';
+      const lines = [header, `Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, '', 'Message:', message];
+      const waText = lines.join('\n');
+      const waHref = 'https://api.whatsapp.com/send?phone=255692538955&text=' + encodeURIComponent(waText);
+      // open in new tab/window so user can send from their WhatsApp
+      window.open(waHref, '_blank');
+      updateSubmission(submission.id, { status: 'whatsapp_opened' });
+
       setTimeout(()=>{
-        document.getElementById('formStatus').textContent = 'Message sent. We will contact you on WhatsApp soon.';
-        this.reset();
+        statusEl.textContent = 'WhatsApp opened. Please send the message from your WhatsApp app.';
+        document.getElementById('contactForm').reset();
       }, 800);
     });
 
@@ -622,6 +650,113 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
       window.addEventListener('resize', function(){
         if(window.innerWidth >= 768) setOpen(false);
       });
+    })();
+  </script>
+  <!-- EmailJS SDK (optional) -->
+  <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    // EmailJS configuration - fill these values to enable direct email sending
+    const EMAILJS_ENABLED = false; // set to true after configuring the IDs below
+    const EMAILJS_SERVICE_ID = 'your_service_id';
+    const EMAILJS_TEMPLATE_ID = 'your_template_id';
+    const EMAILJS_PUBLIC_KEY = 'your_public_key';
+
+    if (EMAILJS_ENABLED && window.emailjs && EMAILJS_PUBLIC_KEY) {
+      try { emailjs.init(EMAILJS_PUBLIC_KEY); } catch (e) { /* ignore init errors */ }
+    }
+  </script>
+  <!-- Admin modal + localStorage submissions UI -->
+  <div id="adminModal" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">
+    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeAdminModal()"></div>
+    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full z-10 overflow-auto">
+      <div class="p-4 flex items-center justify-between border-b">
+        <h3 class="font-semibold">Admin — Contact Submissions</h3>
+        <div class="flex gap-2">
+          <button id="exportCsvBtn" class="px-3 py-1 border rounded">Export CSV</button>
+          <button id="clearSubmissionsBtn" class="px-3 py-1 border rounded text-red-600">Clear All</button>
+          <button onclick="closeAdminModal()" class="px-3 py-1 border rounded">Close</button>
+        </div>
+      </div>
+      <div class="p-4">
+        <table id="submissionsTable" class="w-full text-sm">
+          <thead class="text-left text-gray-700"><tr><th>Date</th><th>Name</th><th>Phone</th><th>Email</th><th>Message</th><th>Method</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUBMISSIONS_KEY = 'afya_submissions';
+
+    function loadSubmissions(){
+      try { return JSON.parse(localStorage.getItem(SUBMISSIONS_KEY) || '[]'); } catch(e){ return []; }
+    }
+    function saveSubmission(obj){
+      const arr = loadSubmissions();
+      arr.push(obj);
+      try { localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(arr)); } catch(e){}
+    }
+    function updateSubmission(id, patch){
+      const arr = loadSubmissions();
+      const i = arr.findIndex(x=>x.id===id);
+      if(i===-1) return;
+      arr[i] = Object.assign({}, arr[i], patch);
+      try { localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(arr)); } catch(e){}
+    }
+    function clearSubmissions(){ localStorage.removeItem(SUBMISSIONS_KEY); renderSubmissions(); }
+
+    function renderSubmissions(){
+      const tbody = document.querySelector('#submissionsTable tbody');
+      tbody.innerHTML = '';
+      const arr = loadSubmissions().slice().reverse();
+      if(!arr.length){ tbody.innerHTML = '<tr><td colspan="8" class="p-4">No submissions</td></tr>'; return; }
+      arr.forEach(s=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="align-top p-2">${new Date(s.createdAt).toLocaleString()}</td>
+          <td class="align-top p-2">${escapeHtml(s.name)}</td>
+          <td class="align-top p-2">${escapeHtml(s.phone)}</td>
+          <td class="align-top p-2">${escapeHtml(s.email)}</td>
+          <td class="align-top p-2">${escapeHtml((s.message||'').slice(0,120))}${(s.message||'').length>120? '…':''}</td>
+          <td class="align-top p-2">${escapeHtml(s.method||'')}</td>
+          <td class="align-top p-2">${escapeHtml(s.status||'')}</td>
+          <td class="align-top p-2"><button data-id="${s.id}" class="viewBtn px-2 py-1 border rounded">View</button> <button data-id="${s.id}" class="delBtn px-2 py-1 border rounded text-red-600">Delete</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+      // attach view/delete handlers
+      tbody.querySelectorAll('.viewBtn').forEach(b=>b.addEventListener('click', e=>{ const id=Number(e.currentTarget.dataset.id); const s=loadSubmissions().find(x=>x.id===id); if(!s) return; alert(`Name: ${s.name}\nPhone: ${s.phone}\nEmail: ${s.email}\n\nMessage:\n${s.message}`); }));
+      tbody.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click', e=>{ const id=Number(e.currentTarget.dataset.id); const arr=loadSubmissions().filter(x=>x.id!==id); localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(arr)); renderSubmissions(); }));
+    }
+
+    function exportCsv(){
+      const arr = loadSubmissions();
+      if(!arr.length) return alert('No submissions to export');
+      const headers = ['id','createdAt','name','phone','email','message','method','status'];
+      const rows = arr.map(r => headers.map(h=>`"${String(r[h]||'').replace(/"/g,'""')}"`).join(','));
+      const csv = [headers.join(','), ...rows].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'afya_submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // Admin modal controls
+    function openAdminModal(){ document.getElementById('adminModal').classList.remove('hidden'); renderSubmissions(); }
+    function closeAdminModal(){ document.getElementById('adminModal').classList.add('hidden'); }
+
+    // add footer admin link dynamically so it is easy to remove later
+    (function addAdminLink(){
+      try{
+        const footer = document.querySelector('footer .max-w-6xl');
+        if(!footer) return;
+        const adminLink = document.createElement('p');
+        adminLink.innerHTML = '<a id="adminOpen" href="#" class="underline">View your Message</a>';
+        footer.appendChild(adminLink);
+        document.getElementById('adminOpen').addEventListener('click', function(e){ e.preventDefault(); openAdminModal(); });
+        document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+        document.getElementById('clearSubmissionsBtn').addEventListener('click', function(){ if(confirm('Clear all submissions?')) clearSubmissions(); });
+      } catch(e){}
     })();
   </script>
 </body>
