@@ -46,6 +46,10 @@
     #waFloat { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
     /* Top auto-scroll advertisements */
     #topAds { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    /* Fixed header and topAds support (styles applied when JS enables fixed mode) */
+    #siteHeader { left: 0; right: 0; }
+    #siteHeader.site-fixed { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; }
+    #topAds.top-fixed { position: fixed; left: 0; right: 0; z-index: 9999; box-shadow: 0 1px 6px rgba(2,6,23,0.08); }
     #topAds .w-24 { width: 96px; height: 96px; }
     #topAdImg { transition: opacity .35s ease; display: block; }
     #topAds .top-ad-hidden { opacity: 0; }
@@ -71,7 +75,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
   <!-- Nav -->
-  <header class="bg-green-700 text-white">
+  <header id="siteHeader" class="bg-green-700 text-white">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between relative">
       <div class="flex items-center gap-3">
   <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.webp" alt="Afya Asilia logo"></div>
@@ -792,6 +796,35 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
         const isDark = document.body.classList.contains('dark');
         if(label) label.textContent = isDark ? ((this.value==='sw') ? 'Giza' : 'Dark') : ((this.value==='sw') ? 'Mwangaza' : 'Light');
       });
+    })();
+
+    // Make header and top advertisement fixed and adjust content padding
+    (function fixHeaderAds(){
+      const header = document.getElementById('siteHeader');
+      const ads = document.getElementById('topAds');
+      if(!header) return;
+
+      function updatePositions(){
+        // ensure header is fixed
+        header.classList.add('site-fixed');
+
+        // if ads exist, fix it below header
+        if(ads){
+          ads.classList.add('top-fixed');
+          // position ads directly below header
+          ads.style.top = header.offsetHeight + 'px';
+        }
+
+        // add body padding equal to total fixed height so page content isn't hidden
+        const adsHeight = ads ? ads.offsetHeight : 0;
+        document.body.style.paddingTop = (header.offsetHeight + adsHeight) + 'px';
+      }
+
+      // run after a short delay to allow fonts/images to load and layout stabilise
+      setTimeout(updatePositions, 80);
+      // also update on resize and when images load
+      window.addEventListener('resize', updatePositions);
+      window.addEventListener('load', updatePositions);
     })();
   </script>
   <!-- EmailJS SDK (optional) -->
