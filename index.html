@@ -44,6 +44,29 @@
 
   .glass { background: rgba(255,255,255,0.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
     #waFloat { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+    /* Top auto-scroll advertisements */
+    #topAds { border-bottom: 1px solid rgba(0,0,0,0.06); }
+    #topAds .w-24 { width: 96px; height: 96px; }
+    #topAdImg { transition: opacity .35s ease; display: block; }
+    #topAds .top-ad-hidden { opacity: 0; }
+    #topAds .top-ad-visible { opacity: 1; }
+    @media (max-width: 640px) {
+      #topAds .w-24 { width: 72px; height: 72px; }
+      #topAds { padding-top: .5rem; padding-bottom: .5rem; }
+      #topAds .line-clamp-2 { -webkit-line-clamp: 2; }
+    }
+
+    /* Dark / Light theme overrides (basic) */
+    body.dark { background-color: #0b1220; color: #e6eef8; }
+    body.dark header { background-color: #064e3b !important; }
+    body.dark .bg-white { background-color: #0f1724 !important; }
+    body.dark .text-gray-700, body.dark .text-gray-600, body.dark .text-gray-800 { color: #cbd5e1 !important; }
+    body.dark .border { border-color: rgba(255,255,255,0.06) !important; }
+    body.dark .glass { background: rgba(2,6,23,0.6) !important; color: #e6eef8 !important; }
+    body.dark .product-img { background-color: #071127 !important; }
+    body.dark a, body.dark p, body.dark span, body.dark h1, body.dark h2, body.dark h3, body.dark h4 { color: #e6eef8 !important; }
+    /* Ensure modal looks good in dark mode */
+    body.dark #productModal .bg-white { background: #071127 !important; }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -87,10 +110,37 @@
           <option value="en">English</option>
           <option value="sw" selected>Swahili</option>
         </select>
+        <!-- Theme toggle -->
+        <label for="themeToggle" class="ml-2 inline-flex items-center gap-2 cursor-pointer text-sm text-white">
+          <input id="themeToggle" type="checkbox" class="hidden" />
+          <span id="themeToggleVisual" class="w-10 h-6 bg-gray-200 rounded-full relative inline-block transition-all" style="background:#fff">
+            <span class="absolute left-1 top-1 w-4 h-4 bg-green-700 rounded-full transition-transform" style="transform: translateX(0);"></span>
+          </span>
+          <span id="themeToggleLabel" class="ml-2 text-xs text-white">Light</span>
+        </label>
         <a id="headerOrderBtn" href="https://api.whatsapp.com/send?phone=255692538955&text=Hello,%20I%20want%20to%20order%20from%20Afya%20Asilia" class="ml-3 inline-flex items-center gap-2 bg-white text-green-700 px-3 py-2 rounded-md text-sm font-medium">Order on WhatsApp</a>
       </div>
     </div>
   </header>
+
+  <!-- Top auto-scroll advertisements -->
+  <section id="topAds" class="bg-white">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+      <div id="topAdContent" class="flex-1 flex items-center gap-4">
+        <div id="topAdImgWrap" class="w-24 h-24 flex-shrink-0 overflow-hidden rounded-md bg-gray-100">
+          <img id="topAdImg" src="" alt="" class="w-full h-full object-cover" />
+        </div>
+        <div id="topAdText" class="flex-1">
+          <div id="topAdTitle" class="font-semibold text-green-800">Featured</div>
+          <div id="topAdDesc" class="text-sm text-gray-600 mt-1 line-clamp-2"></div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="topAdPrev" class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200">‹</button>
+        <button id="topAdNext" class="px-2 py-1 rounded bg-gray-100 hover:bg-gray-200">›</button>
+      </div>
+    </div>
+  </section>
 
   <!-- Hero -->
   <section class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8 items-center">
@@ -606,6 +656,51 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
     });
     // Apply the selected language on initial load (so saved/default language becomes active)
     langSwitcher.dispatchEvent(new Event('change'));
+
+    // Initialize top auto-scroll advertisements (uses `products` array)
+    (function initTopAds(){
+      const adContainer = document.getElementById('topAds');
+      if(!adContainer || !window.products || !products.length) return;
+      const ads = products.slice(0, Math.min(6, products.length));
+      let idx = 0;
+      const imgEl = document.getElementById('topAdImg');
+      const titleEl = document.getElementById('topAdTitle');
+      const descEl = document.getElementById('topAdDesc');
+      if(!imgEl || !titleEl || !descEl) return;
+
+      function show(i){
+        const p = ads[i];
+        if(!p) return;
+        imgEl.classList.remove('top-ad-visible'); imgEl.classList.add('top-ad-hidden');
+        setTimeout(()=>{
+          imgEl.src = p.img;
+          imgEl.alt = p.name;
+          titleEl.textContent = p.name;
+          // short description (single-line, readable)
+          const raw = (getProductDesc(p) || '').replace(/\n+/g,' ').trim();
+          descEl.textContent = raw.length>160 ? raw.slice(0,157)+'…' : raw;
+          imgEl.classList.remove('top-ad-hidden'); imgEl.classList.add('top-ad-visible');
+        }, 120);
+      }
+
+      let timer = null;
+      function start(){ if(timer) return; timer = setInterval(()=>{ idx = (idx+1) % ads.length; show(idx); }, 4500); }
+      function stop(){ if(timer){ clearInterval(timer); timer = null; } }
+
+      const prev = document.getElementById('topAdPrev');
+      const next = document.getElementById('topAdNext');
+      if(prev) prev.addEventListener('click', function(){ stop(); idx = (idx-1+ads.length)%ads.length; show(idx); start(); });
+      if(next) next.addEventListener('click', function(){ stop(); idx = (idx+1)%ads.length; show(idx); start(); });
+
+      adContainer.addEventListener('mouseenter', stop);
+      adContainer.addEventListener('mouseleave', start);
+
+      // update when language changes
+      document.getElementById('langSwitcher').addEventListener('change', function(){ show(idx); });
+
+      show(0);
+      start();
+    })();
     // Mobile menu toggle behavior
     (function(){
       const menuBtn = document.getElementById('menuBtn');
@@ -649,6 +744,53 @@ Katika Afya Asilia, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa 
       // Close mobile menu when resizing to desktop widths
       window.addEventListener('resize', function(){
         if(window.innerWidth >= 768) setOpen(false);
+      });
+    })();
+
+    // Theme toggle: apply saved theme or system preference
+    (function initTheme(){
+      const toggle = document.getElementById('themeToggle');
+      const visual = document.getElementById('themeToggleVisual');
+      const knob = visual && visual.querySelector('span');
+      const label = document.getElementById('themeToggleLabel');
+      const body = document.body;
+      if(!toggle || !visual) return;
+
+      function applyTheme(theme){
+        if(theme === 'dark'){
+          body.classList.add('dark');
+          toggle.checked = true;
+          if(label) label.textContent = (getCurrentLang()==='sw') ? 'Giza' : 'Dark';
+          if(knob) knob.style.transform = 'translateX(16px)';
+          visual.style.background = '#1f2937';
+        } else {
+          body.classList.remove('dark');
+          toggle.checked = false;
+          if(label) label.textContent = (getCurrentLang()==='sw') ? 'Mwangaza' : 'Light';
+          if(knob) knob.style.transform = 'translateX(0)';
+          visual.style.background = '#ffffff';
+        }
+      }
+
+      // Load saved theme, else use prefers-color-scheme
+      let saved = null;
+      try{ saved = localStorage.getItem('afya_theme'); }catch(e){}
+      if(!saved){
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        saved = prefersDark ? 'dark' : 'light';
+      }
+      applyTheme(saved);
+
+      toggle.addEventListener('change', function(){
+        const theme = this.checked ? 'dark' : 'light';
+        try{ localStorage.setItem('afya_theme', theme); }catch(e){}
+        applyTheme(theme);
+      });
+
+      // Update label when language changes
+      document.getElementById('langSwitcher').addEventListener('change', function(){
+        const isDark = document.body.classList.contains('dark');
+        if(label) label.textContent = isDark ? ((this.value==='sw') ? 'Giza' : 'Dark') : ((this.value==='sw') ? 'Mwangaza' : 'Light');
       });
     })();
   </script>
