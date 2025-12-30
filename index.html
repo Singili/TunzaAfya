@@ -71,6 +71,12 @@
     body.dark a, body.dark p, body.dark span, body.dark h1, body.dark h2, body.dark h3, body.dark h4 { color: #e6eef8 !important; }
     /* Ensure modal looks good in dark mode */
     body.dark #productModal .bg-white { background: #071127 !important; }
+    /* Combined logo (behave like one image) */
+    .combined-logo { display: flex; gap: 0; align-items: stretch; justify-content: stretch; overflow: hidden; border-radius: 0.5rem; cursor: pointer; }
+    .combined-logo > .half { flex: 1 1 50%; display:flex; align-items:center; justify-content:center; padding: 1rem; background: transparent; }
+    .combined-logo img { max-width: 92%; height: auto; object-fit: contain; display:block; }
+    .combined-logo:focus, .combined-logo:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); transform: translateY(-1px); }
+    @media (max-width:420px){ .combined-logo img{ max-width:80%; } .combined-logo > .half{ padding: .75rem; } }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -156,8 +162,15 @@
         <a href="#contact" class="border border-green-700 text-green-700 px-4 py-2 rounded-md" id="contactBtn">Contact Us</a>
       </div>
     </div>
-    <div class="rounded-lg overflow-hidden shadow-lg">
-      <img src="images/eternal-logo.png" alt="Afya Asilia" class="w-full h-100 md:h-100 object-cover" />
+    <div class="rounded-lg overflow-hidden shadow-lg bg-white p-0">
+      <a href="#products" class="combined-logo h-56 md:h-64" role="img" aria-label="Afya Asilia and Eternal International partnership">
+        <div class="half" aria-hidden="false">
+          <img src="images/logo.webp" alt="Afya Asilia" />
+        </div>
+        <div class="half" aria-hidden="false">
+          <img src="images/eternal-logo.png" alt="Eternal International" />
+        </div>
+      </a>
     </div>
   </section>
 
