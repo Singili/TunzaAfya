@@ -1,5 +1,5 @@
 **Repository Overview**
-- **Purpose:** Static marketing/shop site for Afya Asilia (natural wellness products). Main UX, product data and UI behavior live in a single file: `index.html`.
+-- **Purpose:** Static marketing/shop site for Tunza Afya yako (natural wellness products). Main UX, product data and UI behavior live in a single file: `index.html`.
 - **Important files:** [index.html](index.html), [README.md](README.md), [tailwind.js](tailwind.js), `bootstrap/` (local CSS/JS assets), `images/` (product images).
 
 **Big-picture architecture**
@@ -13,7 +13,7 @@
 - Categories are plain strings on each product (e.g. `weight loss`, `detox`). Filtering uses exact match against `category` or `all`.
 
 **External integrations / important values**
-- WhatsApp ordering: all order actions construct URLs targeting `https://api.whatsapp.com/send?phone=255692538955...` — update the phone number in `index.html` to change order routing.
+-- WhatsApp ordering: all order actions construct URLs targeting `https://api.whatsapp.com/send?phone=255683681356...` — update the phone number in `index.html` to change order routing.
 - Tailwind is loaded via CDN + local `tailwind.js`. Bootstrap assets exist under `bootstrap/` but the page primarily uses Tailwind; be cautious before removing bootstrap files.
 
 **Developer workflows & commands**

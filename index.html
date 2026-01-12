@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tunza Afya Yako - Natural Wellness</title>
+  <title>Tunza Afya yako - Natural Wellness</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="tailwind.js"></script>
   <style>
@@ -42,6 +42,16 @@
       overflow: auto;
     }
 
+    /* Product modal image: show full image without cropping, limit height to viewport */
+    #modalImg {
+      width: 100%;
+      height: auto;
+      max-height: 50vh;
+      object-fit: contain;
+      display: block;
+      background-color: #fff;
+    }
+
   .glass { background: rgba(255,255,255,0.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
     #waFloat { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
     /* Top auto-scroll advertisements */
@@ -77,6 +87,8 @@
     .combined-logo img { max-width: 92%; height: auto; object-fit: contain; display:block; }
     .combined-logo:focus, .combined-logo:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); transform: translateY(-1px); }
     @media (max-width:420px){ .combined-logo img{ max-width:80%; } .combined-logo > .half{ padding: .75rem; } }
+    /* Ensure in-page anchor targets are visible below the fixed header */
+    [id] { scroll-margin-top: var(--afya-header-offset, 100px); }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -84,9 +96,9 @@
   <header id="siteHeader" class="bg-green-700 text-white">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between relative">
       <div class="flex items-center gap-3">
-  <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.jpg" alt="Tunza Afya Yako logo"></div>
+  <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.jpg" alt="Tunza Afya yako logo"></div>
         <div>
-          <h1 id="siteTitle" class="text-lg font-semibold">Tunza Afya Yako</h1>
+          <h1 id="siteTitle" class="text-lg font-semibold">Tunza Afya yako</h1>
           <p id="siteTag" class="text-xs opacity-90">Natural wellness • Authentic Eternal International products</p>
         </div>
       </div>
@@ -128,7 +140,7 @@
           </span>
           <span id="themeToggleLabel" class="ml-2 text-xs text-white">Light</span>
         </label>
-        <a id="headerOrderBtn" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20Yako" class="ml-3 inline-flex items-center gap-2 bg-white text-green-700 px-3 py-2 rounded-md text-sm font-medium">Order on WhatsApp</a>
+        <button id="headerAddToCart" onclick="openCartModal()" class="ml-3 inline-flex items-center gap-2 bg-white text-green-700 px-3 py-2 rounded-md text-sm font-medium">Add to cart</button>
       </div>
     </div>
   </header>
@@ -155,7 +167,7 @@
   <!-- Hero -->
   <section class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8 items-center">
     <div class="space-y-4">
-      <h2 id="heroTitle" class="text-3xl font-extrabold text-green-800">Welcome to Tunza Afya Yako</h2>
+      <h2 id="heroTitle" class="text-3xl font-extrabold text-green-800">Welcome to Tunza Afya yako</h2>
       <p id="heroDesc" class="text-gray-700">Authentic herbal supplements from Eternal International. Discover natural solutions for weight management, detoxification, immunity support and everyday wellbeing.</p>
       <div class="flex gap-3">
         <a href="#products" class="bg-green-700 text-white px-4 py-2 rounded-md shadow" id="shopBtn">Shop Products</a>
@@ -163,9 +175,9 @@
       </div>
     </div>
     <div class="rounded-lg overflow-hidden shadow-lg bg-white p-0">
-      <a href="#products" class="combined-logo h-56 md:h-64" role="img" aria-label="Tunza Afya Yako and Eternal International partnership">
+      <a href="#products" class="combined-logo h-56 md:h-64" role="img" aria-label="Tunza Afya yako and Eternal International partnership">
         <div class="half" aria-hidden="false">
-          <img src="images/logo.jpg" alt="Tunza Afya Yako" />
+          <img src="images/logo.jpg" alt="Tunza Afya yako" />
         </div>
         <div class="half" aria-hidden="false">
           <img src="images/eternal-logo.png" alt="Eternal International" />
@@ -177,12 +189,12 @@
   <!-- About -->
   <section id="about-us" class="max-w-6xl mx-auto px-4 py-6">
     <div class="glass p-6 rounded-lg shadow-sm">
-      <h3 id="aboutTitle" class="text-2xl font-semibold text-green-800">About Tunza Afya Yako</h3>
-      <p id="aboutDesc" class="mt-3 text-gray-700">Tunza Afya Yako is a trusted online platform dedicated to promoting natural wellness, healthy living, and high-quality nutritional supplements. We believe that true health begins with nature, and our mission is to help individuals transform their lives through safe, effective, and science-supported wellness products.
+      <h3 id="aboutTitle" class="text-2xl font-semibold text-green-800">About Tunza Afya yako</h3>
+      <p id="aboutDesc" class="mt-3 text-gray-700">Tunza Afya yako is a trusted online platform dedicated to promoting natural wellness, healthy living, and high-quality nutritional supplements. We believe that true health begins with nature, and our mission is to help individuals transform their lives through safe, effective, and science-supported wellness products.
 
     As an authorized <b></b>Eternal International </b> sales partner, we provide reliable access to premium herbal products designed to support weight loss, detoxification, immune health, energy balance, and overall body wellness. Our goal is to empower families and communities with natural solutions that improve daily health and long-term wellbeing.
 
-    At Tunza Afya Yako, we are committed to transparency, customer satisfaction, and honest guidance. We ensure that every customer receives genuine products, correct usage instructions, and ongoing support on their wellness journey. Your health is our priority.</p>
+    At Tunza Afya yako, we are committed to transparency, customer satisfaction, and honest guidance. We ensure that every customer receives genuine products, correct usage instructions, and ongoing support on their wellness journey. Your health is our priority.</p>
     </div>
   </section>
 
@@ -234,9 +246,9 @@
           <input required name="phone" placeholder="Phone (e.g. +255...)" class="w-full px-3 py-2 rounded-md border" />
           <input name="email" placeholder="Email (optional)" class="w-full px-3 py-2 rounded-md border" />
           <textarea name="message" placeholder="Message / Order details" class="w-full px-3 py-2 rounded-md border" rows="4"></textarea>
-            <div class="flex gap-3">
+          <div class="flex gap-3">
             <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md">Send Message</button>
-            <a id="waQuick" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20Yako" class="inline-flex items-center gap-2 border border-green-700 text-green-700 px-4 py-2 rounded-md">Quick WhatsApp</a>
+            <a id="waQuick" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20yako" class="inline-flex items-center gap-2 border border-green-700 text-green-700 px-4 py-2 rounded-md">Quick WhatsApp</a>
           </div>
         </form>
         <p id="formStatus" class="mt-3 text-sm text-gray-600"></p>
@@ -247,7 +259,7 @@
         <p id="locationDesc" class="mt-2 text-gray-600">Based in Tanzania / East Africa. Local delivery available. For shipping outside local area, contact us on WhatsApp.</p>
         <div class="mt-4">
           <p id="openHours" class="text-sm text-gray-600">Open: Mon–Sun • 24 hrs</p>
-          <p id="locationPhone" class="text-sm text-gray-600">Phone/WhatsApp: +255683681356</p>
+          <p id="locationPhone" class="text-sm text-gray-600">Phone/WhatsApp: +255 683 681 356</p>
         </div>
       </div>
     </div>
@@ -258,9 +270,9 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-start md:items-center text-sm gap-4 md:gap-0">
       <div>
         <h5 id="footerContactTitle" class="font-semibold">Contact Us</h5>
-        <p id="footerPhone">Phone/WhatsApp: +255683681356</p>
-        <p id="footerEmail">Email: singiligasamalu@gmail.com</p>
-        <p id="footerFacebook"><a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a></p>
+        <p id="footerPhone">Phone/WhatsApp: +255 683 681 356</p>
+        <p id="footerEmail">Email: afyaasilia@gmail.com</p>
+        <p id="footerFacebook"><a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a></p>
         <p id="footerInstagram"><a href="#" class="underline">Instagram: afya_asilia</a></p>
       </div>
       <div>
@@ -268,18 +280,26 @@
         <p id="footerLocationText">Tanzania, East Africa</p>
       </div>
       <div>
-        <p id="footerCopyright">© Tunza Afya Yako — Authorized Eternal International Partner</p>
+        <p id="footerCopyright">© Tunza Afya yako — Authorized Eternal International Partner</p>
       </div>
     </div>
   </footer>
 
   <!-- WhatsApp floating button -->
-  <a id="waFloat" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20Yako" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
+  <a id="waFloat" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20yako" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
+  <!-- Floating cart submit button -->
+  <button id="cartFloat" class="hidden fixed bottom-28 right-5 bg-green-600 text-white rounded-full p-3 shadow-lg flex items-center gap-2" title="Open cart">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 6h13"/></svg>
+    <span id="cartFloatLabel" class="text-sm">Checkout</span>
+    <span id="cartFloatCount" class="ml-1 bg-white text-green-700 rounded-full px-2 text-xs font-semibold">0</span>
+  </button>
+  <!-- Add-to-cart toast -->
+  <div id="cartToast" class="hidden fixed bottom-36 right-5 bg-green-700 text-white px-4 py-2 rounded shadow-lg" role="status" aria-live="polite"></div>
 
   <!-- Product details modal -->
-  <div id="productModal" class="hidden fixed inset-0 z-50 flex items-center justify-center">
+  <div id="productModal" class="hidden fixed inset-0 flex items-center justify-center" style="z-index:20000;">
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeProductModal()"></div>
-    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full z-10 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full overflow-hidden" style="z-index:20001;">
       <div class="p-4 flex justify-between items-start">
         <h4 id="modalTitle" class="font-semibold text-green-800"></h4>
         <button onclick="closeProductModal()" aria-label="Close" class="text-gray-500 text-2xl leading-none">&times;</button>
@@ -290,14 +310,40 @@
         <!-- Make the description area scrollable when content is long -->
   <p id="modalDesc" class="mt-2 text-gray-600"></p>
         <div class="mt-4 flex gap-2">
-          <a id="modalOrder" href="#" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">Order on WhatsApp</a>
+          <button id="modalOrder" type="button" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">Add to cart</button>
+          <a id="modalExplore" href="#products" onclick="exploreMoreProducts(event)" class="inline-block text-center px-3 py-2 border rounded-md">Explore more products</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    function showProductDetails(id) {
+      <!-- Cart modal -->
+      <div id="cartModal" class="hidden fixed inset-0 flex items-center justify-center" style="z-index:20000;">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeCartModal()"></div>
+        <div class="bg-white rounded-lg shadow-lg max-w-lg w-full overflow-hidden" style="z-index:20001;">
+          <div class="p-4 flex justify-between items-center border-b">
+            <h4 class="font-semibold text-green-800">Your Cart <span id="cartCount" class="text-sm text-gray-600 ml-2">0</span></h4>
+            <button id="cartClose" aria-label="Close" class="text-gray-500 text-2xl leading-none">&times;</button>
+          </div>
+          <div class="p-4">
+            <div id="cartList" class="mb-4"></div>
+            <form id="cartForm" onsubmit="submitCartForm(event)" class="space-y-3">
+              <input required name="c_name" placeholder="Name" class="w-full px-3 py-2 rounded-md border" />
+              <input required name="c_phone" placeholder="Phone (e.g. +255...)" class="w-full px-3 py-2 rounded-md border" />
+              <input name="c_email" placeholder="Email (optional)" class="w-full px-3 py-2 rounded-md border" />
+              <input name="c_location" placeholder="Location / Address" class="w-full px-3 py-2 rounded-md border" />
+              <div class="flex gap-3">
+                <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md">Send Order</button>
+                <button type="button" id="cartCloseBtn" onclick="closeCartModal()" class="px-4 py-2 border rounded-md">Cancel</button>
+              </div>
+              <p id="cartFormStatus" class="text-sm text-gray-600 mt-2"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <script>
+    function showProductDetails(id, pushState = true) {
       const p = products.find(x => x.id === id);
       if (!p) return;
       document.getElementById('modalTitle').textContent = p.name;
@@ -344,15 +390,32 @@
   }
   const modalOrder = document.getElementById('modalOrder');
   if(modalOrder){
-    modalOrder.href = 'https://api.whatsapp.com/send?phone=255683681356&text=' + encodeURIComponent(getWhatsAppPrefill(p));
-    // Localize modal order button label
-    modalOrder.textContent = (getCurrentLang() === 'sw') ? 'Agiza kwenye WhatsApp' : 'Order on WhatsApp';
+    // make modal order button add product to cart (do not open form)
+    modalOrder.onclick = function(){ addToCart(p.id); };
+    // Localize modal order button label (now Add to cart)
+    modalOrder.textContent = (getCurrentLang() === 'sw') ? 'Ongeza kwenye kikapu' : 'Add to cart';
   }
+  const modalExplore = document.getElementById('modalExplore');
+  if(modalExplore){
+    modalExplore.textContent = (getCurrentLang() === 'sw') ? 'Angalia bidhaa nyingine' : 'Explore more products';
+  }
+      // Update URL so the product can be linked/shared
+      try{
+        const newUrl = getProductLink(p.id);
+        if(pushState) history.pushState({ product: p.id }, '', newUrl);
+        else history.replaceState({ product: p.id }, '', newUrl);
+      }catch(e){}
       document.getElementById('productModal').classList.remove('hidden');
     }
 
     function closeProductModal() {
       document.getElementById('productModal').classList.add('hidden');
+      // remove product param from URL without reloading
+      try{
+        const url = new URL(window.location.href);
+        url.searchParams.delete('product');
+        history.replaceState(null, '', url.pathname + url.search + url.hash);
+      }catch(e){}
     }
     
     // Return currently selected language ('en' or 'sw')
@@ -378,6 +441,33 @@
       const lang = getCurrentLang();
       if (lang === 'sw') return `Ninataka kununua ${p.name}`; // "I want to buy <product>"
       return `I'm interested in ${p.name}`;
+    }
+
+    // Return a full product link suitable for ads (absolute or pathname with query)
+    function getProductLink(id){
+      try{
+        const url = new URL(window.location.href);
+        url.searchParams.set('product', id);
+        return url.origin + url.pathname + url.search + url.hash;
+      }catch(e){
+        return (window.location.origin || '') + window.location.pathname + '?product=' + id;
+      }
+    }
+
+    // Called by anchor links in product cards to open modal without reloading
+    function openProductLink(e, id){
+      if(e && e.preventDefault) e.preventDefault();
+      showProductDetails(id, true);
+    }
+
+    // Close modal and jump to products section (used by modal 'Explore more products' link)
+    function exploreMoreProducts(e){
+      if(e && e.preventDefault) e.preventDefault();
+      closeProductModal();
+      try{
+        const el = document.getElementById('products');
+        if(el){ el.scrollIntoView({ behavior: 'smooth' }); }
+      }catch(e){}
     }
   const products = [
   { id: 1, name: 'Chrysanthemum Tea', category: 'weight loss', price: 'Tsh 65,000', desc_en: 'What it does: Helps support fat metabolism, improve digestion, and assist toxin elimination. Who it is for: People seeking safe weight loss and better digestion.', desc_sw: 'Inafanya nini: Husaidia kuchochea mmeng`enyo wa mafuta, kuboresha mmeng`enyo wa chakula, na kusaidia kuondoa sumu mwilini. Kwa nani: Watu wanaotaka kupunguza uzito, unene au kitambi kwa njia salama na kuboresha mmeng`enyo.', img: 'images/chrysanthemum-tea.jpg' },
@@ -439,10 +529,9 @@
       list.forEach(p => {
         const card = document.createElement('div');
         card.className = 'bg-white rounded-lg shadow overflow-hidden';
-  const waHref = 'https://api.whatsapp.com/send?phone=255683681356&text=' + encodeURIComponent(getWhatsAppPrefill(p));
-        // Localized labels for action buttons
-        const lang = getCurrentLang();
-        const orderLabel = (lang === 'sw') ? 'Agiza kwenye WhatsApp' : 'Order on WhatsApp';
+    // Localized labels for action buttons (now Add to cart)
+    const lang = getCurrentLang();
+    const orderLabel = (lang === 'sw') ? 'Ongeza kwenye kikapu' : 'Add to cart';
         const readLabel = (lang === 'sw') ? 'Soma zaidi' : 'Read more';
         // Format the short card description with bolded headings (safe-escaped)
         const rawDesc = getProductDesc(p) || '';
@@ -477,15 +566,15 @@
           }
         }
         card.innerHTML = `
-          <img src="${p.img}" alt="${p.name}" class="w-full product-img" />
+          <a href="${getProductLink(p.id)}" onclick="openProductLink(event, ${p.id})"><img src="${p.img}" alt="${p.name}" class="w-full product-img" /></a>
     <div class="p-4">
             <div class="flex items-center justify-between">
-              <h4 class="font-semibold text-green-800">${p.name}</h4>
+              <a href="${getProductLink(p.id)}" onclick="openProductLink(event, ${p.id})" class="font-semibold text-green-800">${p.name}</a>
               <span class="text-sm font-medium text-gray-600">${p.price}</span>
             </div>
           <p class="text-sm text-gray-600 mt-2 line-clamp-2">${descHtml}</p>
             <div class="mt-3 flex gap-2">
-              <a href="${waHref}" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">${orderLabel}</a>
+              <button type="button" onclick="addToCart(${p.id})" class="flex-1 inline-block text-center px-3 py-2 border rounded-md">${orderLabel}</button>
               <button class="px-3 py-2 bg-gray-100 text-green-700 rounded-md" onclick="showProductDetails(${p.id})">${readLabel}</button>
             </div>
           </div>
@@ -513,12 +602,216 @@
     searchInput.addEventListener('input', filterProducts);
     categoryFilter.addEventListener('change', filterProducts);
 
-    const cart = [];
+    // Handle deep-linking: open product modal when ?product=<id> is present
+    (function handleDeepLink(){
+      try{
+        const params = new URLSearchParams(window.location.search);
+        const pid = params.get('product');
+        if(pid){
+          const id = Number(pid);
+          if(!Number.isNaN(id) && products.find(x=>x.id===id)){
+            // Use replaceState so we don't add a duplicate entry on initial load
+            showProductDetails(id, false);
+          }
+        }
+      }catch(e){}
+
+      // Keep modal state in sync with browser back/forward
+      window.addEventListener('popstate', function(e){
+        const state = e.state;
+        if(state && state.product){
+          showProductDetails(state.product, false);
+        } else {
+          closeProductModal();
+        }
+      });
+    })();
+
+    // Cart helpers: persist cart as array of {id, qty}
+    function loadCart(){ try{ return JSON.parse(localStorage.getItem('afya_cart')||'[]'); }catch(e){ return []; } }
+    function saveCart(){ try{ localStorage.setItem('afya_cart', JSON.stringify(cart)); }catch(e){} }
+    function clearCart(){ cart = []; saveCart(); updateCartUI(); }
+    function cartTotalItems(){ return cart.reduce((s,i)=>s+(i.qty||0),0); }
+
+    // Initialize cart from storage
+    let cart = loadCart();
+    let currentModalProduct = null;
+
     function addToCart(id) {
-      const p = products.find(x => x.id === id);
-      if (!p) return;
-      cart.push(p);
-      alert(p.name + ' added to cart. Cart size: ' + cart.length);
+      const idx = cart.findIndex(x=>x.id===id);
+      if(idx === -1) cart.push({ id: id, qty: 1 });
+      else cart[idx].qty = (cart[idx].qty || 0) + 1;
+      saveCart();
+      currentModalProduct = id;
+      updateCartUI();
+      // show success toast
+      try{
+        const p = products.find(x=>x.id===id);
+        const msg = (getCurrentLang()==='sw') ? (p ? (p.name + ' imeongezwa kwenye kikapu') : 'Imeongezwa kwenye kikapu') : (p ? (p.name + ' added to cart') : 'Added to cart');
+        showCartToast(msg);
+      }catch(e){}
+    }
+
+    function changeQty(id, delta){
+      const idx = cart.findIndex(x=>x.id===id);
+      if(idx === -1) return;
+      cart[idx].qty = Math.max(0, (cart[idx].qty||0) + delta);
+      if(cart[idx].qty === 0) cart.splice(idx,1);
+      saveCart();
+      updateCartUI();
+      openCartModal();
+    }
+
+    function removeFromCart(id){
+      const idx = cart.findIndex(x=>x.id===id);
+      if(idx === -1) return;
+      cart.splice(idx,1);
+      saveCart();
+      updateCartUI();
+      openCartModal();
+    }
+
+    // Cart modal open/close and render
+    function openCartModal(){
+      const list = document.getElementById('cartList');
+      const cartCount = document.getElementById('cartCount');
+      if(!list) return;
+      list.innerHTML = '';
+      if(cart.length === 0){ list.innerHTML = '<div class="p-3 text-sm text-gray-600">Your cart is empty.</div>'; }
+      else {
+        cart.forEach(it => {
+          const p = products.find(x=>x.id==it.id);
+          if(!p) return;
+          const row = document.createElement('div');
+          row.className = 'flex justify-between items-center px-3 py-2 border-b gap-2';
+          row.innerHTML = `
+            <div class="flex-1">
+              <div class="text-sm font-semibold">${escapeHtml(p.name)}</div>
+              <div class="text-xs text-gray-500">${escapeHtml(p.price)}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="px-2 py-1 border rounded text-sm" onclick="changeQty(${p.id}, -1)">-</button>
+              <div class="px-2">${it.qty}</div>
+              <button class="px-2 py-1 border rounded text-sm" onclick="changeQty(${p.id}, 1)">+</button>
+              <button class="px-2 py-1 text-red-600" onclick="removeFromCart(${p.id})">Remove</button>
+            </div>
+          `;
+          list.appendChild(row);
+        });
+      }
+      if(cartCount) cartCount.textContent = cartTotalItems();
+      document.getElementById('cartModal').classList.remove('hidden');
+    }
+
+    function closeCartModal(){ document.getElementById('cartModal').classList.add('hidden'); }
+
+    document.addEventListener('click', function(e){ if(e.target && (e.target.id === 'cartClose' || e.target.id === 'cartCloseBtn')) closeCartModal(); });
+
+    // Persist customer details
+    function loadCustomer(){ try{ return JSON.parse(localStorage.getItem('afya_customer')||'null'); }catch(e){ return null; } }
+    function saveCustomer(obj){ try{ localStorage.setItem('afya_customer', JSON.stringify(obj)); }catch(e){} }
+
+    // Helpers to parse and format price strings like 'Tsh 65,000' -> 65000
+    function priceToNumber(str){
+      if(!str) return 0;
+      try{
+        const cleaned = String(str).replace(/[^0-9.,-]/g,'').replace(/,/g,'');
+        const n = parseFloat(cleaned);
+        return Number.isFinite(n) ? n : 0;
+      }catch(e){ return 0; }
+    }
+    function formatPrice(n){
+      try{ return 'Tsh ' + Number(Math.round(n)).toLocaleString('en-US'); }catch(e){ return 'Tsh ' + n; }
+    }
+
+    // cart form submit: send WhatsApp with cart and customer details
+    function submitCartForm(e){
+      if(e && e.preventDefault) e.preventDefault();
+      const form = document.getElementById('cartForm');
+      if(!form) return;
+      const name = form.elements['c_name']?.value || '';
+      const phone = form.elements['c_phone']?.value || '';
+      const email = form.elements['c_email']?.value || '';
+      const location = form.elements['c_location']?.value || '';
+      const statusEl = document.getElementById('cartFormStatus');
+      if(statusEl) statusEl.textContent = 'Opening WhatsApp...';
+
+      // Save customer for future quick checkout
+      saveCustomer({ name, phone, email, location });
+
+      // Build message including cart items
+      const header = (getCurrentLang() === 'sw') ? '*Oda kutoka Tunza Afya yako:*' : '*Order from Tunza Afya yako:*';
+      const lines = [header, `Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Location: ${location}`, '', 'Cart:'];
+      if(cart.length === 0) lines.push('- (empty)');
+      else {
+        let total = 0;
+        cart.forEach(it => {
+          const p = products.find(x=>x.id==it.id);
+          if(!p) return;
+          lines.push(`- ${p.name} x ${it.qty} (${p.price})`);
+          total += priceToNumber(p.price) * (it.qty||0);
+        });
+        // append total
+        lines.push('', (getCurrentLang() === 'sw') ? ('Jumla: ' + formatPrice(total)) : ('Total: ' + formatPrice(total)) );
+      }
+      const waText = lines.join('\n');
+      const waHref = 'https://api.whatsapp.com/send?phone=255683681356&text=' + encodeURIComponent(waText);
+      // record submission
+      const submission = { id: Date.now(), name, phone, email, location, cart: JSON.parse(JSON.stringify(cart)), method: 'whatsapp_cart', status: 'pending', createdAt: new Date().toISOString() };
+      saveSubmission(submission);
+      window.open(waHref, '_blank');
+      updateSubmission(submission.id, { status: 'whatsapp_opened' });
+      // reset
+      setTimeout(()=>{
+        if(statusEl) statusEl.textContent = 'WhatsApp opened. Please send the message from your app.';
+        cart = [];
+        saveCart();
+        updateCartUI();
+        closeCartModal();
+      },800);
+    }
+
+    // Update floating cart UI (count, visibility)
+    function updateCartUI(){
+      const float = document.getElementById('cartFloat');
+      const countEl = document.getElementById('cartFloatCount');
+      const cartCountBadge = document.getElementById('cartCount');
+      const total = cartTotalItems();
+      if(countEl) countEl.textContent = total;
+      if(cartCountBadge) cartCountBadge.textContent = total;
+      if(float){
+        if(total > 0) float.classList.remove('hidden'); else float.classList.add('hidden');
+      }
+    }
+
+    // Click on floating cart: always open cart modal so customer can preview/manage before submit
+    document.getElementById('cartFloat')?.addEventListener('click', function(){
+      openCartModal();
+      // prefill the form if customer details exist
+      const c = loadCustomer();
+      if(c){
+        const form = document.getElementById('cartForm');
+        if(form){
+          form.elements['c_name'].value = c.name || '';
+          form.elements['c_phone'].value = c.phone || '';
+          form.elements['c_email'].value = c.email || '';
+          form.elements['c_location'].value = c.location || '';
+        }
+      }
+    });
+
+    // run UI init
+    updateCartUI();
+
+    // Toast helper: show brief success message
+    let _cartToastTimer = null;
+    function showCartToast(msg, ms = 2000){
+      const el = document.getElementById('cartToast');
+      if(!el) return;
+      el.textContent = msg || '';
+      el.classList.remove('hidden');
+      if(_cartToastTimer) clearTimeout(_cartToastTimer);
+      _cartToastTimer = setTimeout(()=>{ el.classList.add('hidden'); _cartToastTimer = null; }, ms);
     }
 
     document.getElementById('contactForm').addEventListener('submit', function(e){
@@ -544,7 +837,7 @@
       saveSubmission(submission);
 
       // Build WhatsApp prefilled message and open
-      const header = (getCurrentLang() === 'sw') ? '*Ombi la Kuwasiliana na Tunza Afya Yako:*' : '*Tunza Afya Yako contact request:*';
+      const header = (getCurrentLang() === 'sw') ? '*Ombi la Kuwasiliana na Tunza Afya yako:*' : '*Tunza Afya yako contact request:*';
       const lines = [header, `Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, '', 'Message:', message];
       const waText = lines.join('\n');
       const waHref = 'https://api.whatsapp.com/send?phone=255683681356&text=' + encodeURIComponent(waText);
@@ -571,12 +864,12 @@
 
     langSwitcher.addEventListener('change', function(){
       if(this.value === 'sw') {
-        document.getElementById('heroTitle').textContent = 'Karibu Tunza Afya Yako';
+        document.getElementById('heroTitle').textContent = 'Karibu Tunza Afya yako';
         document.getElementById('heroDesc').textContent = 'Virutubisho asilia kutoka Eternal International. Gundua suluhisho la asili kwa kudhibiti uzito, kusafisha mwili, kuimarisha kinga na ustawi wa kila siku.';
         document.getElementById('shopBtn').textContent = 'Nunua Bidhaa';
         document.getElementById('contactBtn').textContent = 'Wasiliana Nasi';
         // Header localization - Swahili
-        const siteTitle = document.getElementById('siteTitle'); if(siteTitle) siteTitle.textContent = 'Tunza Afya Yako';
+        const siteTitle = document.getElementById('siteTitle'); if(siteTitle) siteTitle.textContent = 'Tunza Afya yako';
         const siteTag = document.getElementById('siteTag'); if(siteTag) siteTag.textContent = 'Afya ya asili • Bidhaa halali za Eternal International';
         ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'].forEach(id=>{
           const el = document.getElementById(id); if(!el) return; 
@@ -585,13 +878,13 @@
           else if(id.toLowerCase().includes('products')) el.textContent = 'Bidhaa';
           else if(id.toLowerCase().includes('contact')) el.textContent = 'Wasiliana';
         });
-        const headerOrder = document.getElementById('headerOrderBtn'); if(headerOrder) headerOrder.textContent = 'Agiza kwenye WhatsApp';
-  document.getElementById('aboutTitle').textContent = 'Kuhusu Tunza Afya Yako';
-  document.getElementById('aboutDesc').textContent = `Tunza Afya Yako ni jukwaa mtandaoni la kuaminika lililojitolea kukuza ustawi wa asili, maisha yenye afya, na virutubisho vya ubora wa juu. Tunaamini afya ya kweli inaanza na asili, na dhamira yetu ni kuwasaidia watu kubadilisha maisha yao kupitia bidhaa za ustawi ambazo ni salama, zenye ufanisi na zinaungwa mkono na tafiti.
+        const headerOrder = document.getElementById('headerAddToCart'); if(headerOrder) headerOrder.textContent = 'Ongeza kwenye kikapu';
+  document.getElementById('aboutTitle').textContent = 'Kuhusu Tunza Afya yako';
+  document.getElementById('aboutDesc').textContent = `Tunza Afya yako ni jukwaa mtandaoni la kuaminika lililojitolea kukuza ustawi wa asili, maisha yenye afya, na virutubisho vya ubora wa juu. Tunaamini afya ya kweli inaanza na asili, na dhamira yetu ni kuwasaidia watu kubadilisha maisha yao kupitia bidhaa za ustawi ambazo ni salama, zenye ufanisi na zinaungwa mkono na tafiti.
 
 Kama mshirika rasmi wa mauzo wa Eternal International, tunatoa upatikanaji wa kuaminika wa bidhaa za mimea za kiwango cha juu zilizoundwa kusaidia kupunguza uzito, kusafisha mwili, kuimarisha mfumo wa kinga, kusawazisha nishati, na kuboresha afya kwa ujumla. Lengo letu ni kuwawezesha familia na jumuiya kwa suluhisho za asili zinazoongeza afya ya kila siku na ustawi wa muda mrefu.
 
-Katika Tunza Afya Yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa kweli. Tunahakikisha kila mteja anapata bidhaa halisi, maelekezo sahihi ya matumizi, na msaada endelevu katika safari yao ya ustawi. Afya yako ndiyo kipaumbele chetu.`;
+Katika Tunza Afya yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo wa kweli. Tunahakikisha kila mteja anapata bidhaa halisi, maelekezo sahihi ya matumizi, na msaada endelevu katika safari yao ya ustawi. Afya yako ndiyo kipaumbele chetu.`;
         document.getElementById('productsTitle').textContent = 'Bidhaa Zetu';
         document.getElementById('contactTitle').textContent = 'Wasiliana / Agiza';
         document.getElementById('contactDesc').textContent = 'Jaza fomu au tumia WhatsApp kuweka oda. Tutajibu ndani ya masaa machache.';
@@ -615,26 +908,26 @@ Katika Tunza Afya Yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo
         document.getElementById('what3Desc').textContent = 'Uwasilishaji wa ndani, chaguzi za usafirishaji kitaifa, na msaada baada ya mauzo.';
   // Footer localization - Swahili
   document.getElementById('footerContactTitle').textContent = 'Wasiliana Nasi';
-  document.getElementById('footerPhone').textContent = 'Simu/WhatsApp: +255683681356';
-  document.getElementById('footerEmail').textContent = 'Barua pepe: singiligasamalu@gmail.com';
-  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a>';
+  document.getElementById('footerPhone').textContent = 'Simu/WhatsApp: +255 683 681 356';
+  document.getElementById('footerEmail').textContent = 'Barua pepe: afyaasilia@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a>';
   document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
   document.getElementById('footerLocationTitle').textContent = 'Mahali';
   document.getElementById('footerLocationText').textContent = 'Tanzania, Afrika Mashariki';
-  document.getElementById('footerCopyright').textContent = '© Tunza Afya Yako — Mshirika rasmi wa Eternal International';
+  document.getElementById('footerCopyright').textContent = '© Tunza Afya yako — Mshirika rasmi wa Eternal International';
       } else {
-        document.getElementById('heroTitle').textContent = 'Welcome to Tunza Afya Yako';
+        document.getElementById('heroTitle').textContent = 'Welcome to Tunza Afya yako';
         document.getElementById('heroDesc').textContent = 'Authentic herbal supplements from Eternal International. Discover natural solutions for weight management, detoxification, immunity support and everyday wellbeing.';
   document.getElementById('shopBtn').textContent = 'Shop Products';
   document.getElementById('contactBtn').textContent = 'Contact Us';
   // Header localization - English
-  const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Tunza Afya Yako';
+  const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Tunza Afya yako';
   const siteTagEn = document.getElementById('siteTag'); if(siteTagEn) siteTagEn.textContent = 'Natural wellness • Authentic Eternal International products';
   const headerIds = ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'];
   headerIds.forEach(id=>{ const el = document.getElementById(id); if(!el) return; if(id.toLowerCase().includes('about')) el.textContent = 'About'; else if(id.toLowerCase().includes('what')) el.textContent = 'What we do'; else if(id.toLowerCase().includes('products')) el.textContent = 'Products'; else if(id.toLowerCase().includes('contact')) el.textContent = 'Contact'; });
-  const headerOrderEn = document.getElementById('headerOrderBtn'); if(headerOrderEn) headerOrderEn.textContent = 'Order on WhatsApp';
-  document.getElementById('aboutTitle').textContent = 'About Tunza Afya Yako';
-  document.getElementById('aboutDesc').textContent = 'Tunza Afya Yako is a trusted online platform dedicated to promoting natural wellness, healthy living, and high-quality nutritional supplements. We believe that true health begins with nature, and our mission is to help individuals transform their lives through safe, effective, and science-supported wellness products.\n\nAs an authorized <b>Eternal International</b> sales partner, we provide reliable access to premium herbal products designed to support weight loss, detoxification, immune health, energy balance, and overall body wellness. Our goal is to empower families and communities with natural solutions that improve daily health and long-term wellbeing.\n\nAt Tunza Afya Yako, we are committed to transparency, customer satisfaction, and honest guidance. We ensure that every customer receives genuine products, correct usage instructions, and ongoing support on their wellness journey. Your health is our priority.';
+  const headerOrderEn = document.getElementById('headerAddToCart'); if(headerOrderEn) headerOrderEn.textContent = 'Add to cart';
+  document.getElementById('aboutTitle').textContent = 'About Tunza Afya yako';
+  document.getElementById('aboutDesc').textContent = 'Tunza Afya yako is a trusted online platform dedicated to promoting natural wellness, healthy living, and high-quality nutritional supplements. We believe that true health begins with nature, and our mission is to help individuals transform their lives through safe, effective, and science-supported wellness products.\n\nAs an authorized <b>Eternal International</b> sales partner, we provide reliable access to premium herbal products designed to support weight loss, detoxification, immune health, energy balance, and overall body wellness. Our goal is to empower families and communities with natural solutions that improve daily health and long-term wellbeing.\n\nAt Tunza Afya yako, we are committed to transparency, customer satisfaction, and honest guidance. We ensure that every customer receives genuine products, correct usage instructions, and ongoing support on their wellness journey. Your health is our priority.';
         document.getElementById('productsTitle').textContent = 'Our Products';
         document.getElementById('contactTitle').textContent = 'Get in touch / Order';
         document.getElementById('contactDesc').textContent = 'Fill the form or use WhatsApp to place your order. We will reply within a few hours.';
@@ -658,13 +951,13 @@ Katika Tunza Afya Yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo
         document.getElementById('what3Desc').textContent = 'Local delivery, nationwide shipping options, and after-sale support to track progress and answer questions.';
   // Footer localization - English
   document.getElementById('footerContactTitle').textContent = 'Contact Us';
-  document.getElementById('footerPhone').textContent = 'Phone/WhatsApp: +255683681356';
-  document.getElementById('footerEmail').textContent = 'Email: singiligasamalu@gmail.com';
-  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a>';
+  document.getElementById('footerPhone').textContent = 'Phone/WhatsApp: +255 692 538 955';
+  document.getElementById('footerEmail').textContent = 'Email: afyaasilia@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a>';
   document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
   document.getElementById('footerLocationTitle').textContent = 'Location';
   document.getElementById('footerLocationText').textContent = 'Tanzania, East Africa';
-  document.getElementById('footerCopyright').textContent = '© Tunza Afya Yako — Authorized Eternal International Partner';
+  document.getElementById('footerCopyright').textContent = '© Tunza Afya yako — Authorized Eternal International Partner';
       }
       // Re-render products so descriptions update for the selected language
       filterProducts();
@@ -831,6 +1124,8 @@ Katika Tunza Afya Yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo
         // add body padding equal to total fixed height so page content isn't hidden
         const adsHeight = ads ? ads.offsetHeight : 0;
         document.body.style.paddingTop = (header.offsetHeight + adsHeight) + 'px';
+        // expose the combined header+ads height to CSS so anchor targets can offset correctly
+        try{ document.documentElement.style.setProperty('--afya-header-offset', (header.offsetHeight + adsHeight) + 'px'); }catch(e){}
       }
 
       // run after a short delay to allow fonts/images to load and layout stabilise
@@ -856,7 +1151,7 @@ Katika Tunza Afya Yako, tumejitolea kwa uwazi, kuridhika kwa wateja, na mwongozo
   <!-- Admin modal + localStorage submissions UI -->
   <div id="adminModal" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-20 px-4">
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeAdminModal()"></div>
-    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full z-10 overflow-auto">
+    <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full overflow-auto" style="z-index:20001;">
       <div class="p-4 flex items-center justify-between border-b">
         <h3 class="font-semibold">Admin — Contact Submissions</h3>
         <div class="flex gap-2">
