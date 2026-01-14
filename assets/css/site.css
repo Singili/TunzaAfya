@@ -1,0 +1,418 @@
+/* Product cards: fixed height box, fill the box while keeping aspect and center the crop */
+.product-img {
+  width: 100%;
+  height: fit-content;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  background-color: #f8fafc; /* light neutral bg in case of transparent images */
+}
+
+/* Inline circular logo in the header */
+.header-logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 9999px;
+}
+
+/* Two-line clamp for product descriptions in cards */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Modal description scroll behavior */
+#modalDesc {
+  max-height: 40vh;
+  overflow: auto;
+}
+
+/* Product modal image: show full image without cropping, limit height to viewport */
+#modalImg {
+  width: 100%;
+  height: auto;
+  max-height: 50vh;
+  object-fit: contain;
+  display: block;
+  background-color: #fff;
+}
+
+/* Product modal layout: fixed max height, scrollable body, fixed footer */
+#productModal .product-modal { max-height: 90vh; display: flex; flex-direction: column; }
+#productModal .product-modal .modal-header { flex: 0 0 auto; }
+#productModal .product-modal .modal-image { max-height: 38vh; object-fit: contain; width: 100%; display: block; }
+#productModal .product-modal .modal-body { flex: 1 1 auto; overflow: hidden; }
+#productModal .product-modal #modalDescWrapper { max-height: calc(90vh - 220px); overflow: auto; }
+#productModal .product-modal .modal-footer { flex: 0 0 auto; }
+
+/* Ensure description paragraph spacing doesn't collapse inside scroll wrapper */
+#modalDesc { margin: 0; padding-right: 0.25rem; }
+
+.glass { background: rgba(255,255,255,0.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+/* Floating buttons: explicit stacking to avoid overlap */
+#waFloat { position: fixed; right: 16px; bottom: 16px; z-index: 9997; }
+#cartFloat { position: fixed; right: 16px; bottom: 86px; z-index: 9999; }
+#cartToast { position: fixed; right: 16px; bottom: 146px; z-index: 9998; }
+/* Top auto-scroll advertisements */
+#topAds { border-bottom: 1px solid rgba(0,0,0,0.06); }
+/* Fixed header and topAds support (styles applied when JS enables fixed mode) */
+#siteHeader { left: 0; right: 0; }
+#siteHeader.site-fixed { position: fixed; top: 0; left: 0; right: 0; z-index: 10000; }
+#topAds.top-fixed { position: fixed; left: 0; right: 0; z-index: 9999; box-shadow: 0 1px 6px rgba(2,6,23,0.08); }
+#topAds .w-24 { width: 96px; height: 96px; }
+#topAdImg { transition: opacity .35s ease; display: block; }
+#topAds .top-ad-hidden { opacity: 0; }
+#topAds .top-ad-visible { opacity: 1; }
+
+/* Ensure previous/next arrows on the top ad bar are visible in dark theme */
+body.dark #topAdPrev,
+body.dark #topAdNext {
+  background: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+body.dark #topAdPrev:hover,
+body.dark #topAdNext:hover {
+  background: rgba(255,255,255,0.10) !important;
+  color: #e6eef8 !important;
+}
+
+@media (max-width: 640px) {
+  #topAds .w-24 { width: 72px; height: 72px; }
+  #topAds { padding-top: .5rem; padding-bottom: .5rem; }
+  #topAds .line-clamp-2 { -webkit-line-clamp: 2; }
+}
+
+/* Header search autocomplete suggestions */
+.search-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #ffffff; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 8px 20px rgba(2,6,23,0.08); z-index: 12000; max-height: 320px; overflow: auto; border-radius: 0.375rem; }
+.search-suggestions .item { padding: 0.5rem 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+.search-suggestions .item:hover { background: rgba(4,120,87,0.04); }
+.search-suggestions .item .hint { font-size: 0.85rem; color: #6b7280; margin-left: auto; }
+.search-suggestions .item strong { color: #064e3b; }
+
+/* Loading spinner for suggestions (small, subtle) */
+.search-suggestions.loading { position: relative; }
+.search-suggestions.loading::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0.5rem;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.08);
+  border-top-color: #064e3b;
+  animation: afya-spin 0.9s linear infinite;
+  z-index: 12001;
+}
+@keyframes afya-spin { to { transform: rotate(360deg); } }
+
+/* Add-to-cart primary button: make it clearly visible for customers */
+.add-to-cart, button.add-to-cart, a.add-to-cart, input.add-to-cart {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+}
+.add-to-cart:hover, button.add-to-cart:hover, a.add-to-cart:hover, input.add-to-cart:hover {
+  background-color: #15803d !important;
+}
+/* Ensure accessibility in dark mode */
+body.dark .add-to-cart, body.dark button.add-to-cart, body.dark a.add-to-cart, body.dark input.add-to-cart {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure Send Order button in cart modal is visible (green) in both light and dark themes */
+#cartModal button[type="submit"],
+#cartModal .send-order-btn,
+#cartModal .add-to-cart,
+#cartModal button.add-to-cart,
+#cartModal a.add-to-cart {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+body.dark #cartModal button[type="submit"],
+body.dark #cartModal .send-order-btn,
+body.dark #cartModal .add-to-cart {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+
+/* Mobile / small device tweaks */
+@media (max-width: 640px) {
+  /* limit product image height for consistent cards */
+  .product-img { max-height: 220px; object-fit: cover; }
+
+  /* Stack product action buttons vertically for easier tapping */
+  #productGrid .mt-3.flex { flex-direction: column; }
+  #productGrid .mt-3.flex .flex-1 { width: 100%; }
+  #productGrid .mt-3.flex button + button { margin-top: 0.5rem; }
+
+  /* Increase tappable target sizes */
+  button, .btn { min-height: 44px; }
+
+  /* Make modal take most of the viewport height and be comfortably padded */
+  .max-w-lg { margin: 0 0.75rem; }
+
+  /* Floating actions spacing so they don't clash with edge UI on small screens; stacked vertically */
+  #waFloat { right: 12px; bottom: 12px; }
+  #cartFloat { right: 12px; bottom: 72px; }
+  #cartToast { right: 12px; bottom: 132px; }
+
+  /* Ensure search suggestions show correctly in the mobile search panel
+     On small screens show suggestions in-flow (static positioning) so they
+     appear directly under the input and are not clipped by container max-height. */
+  .mobile-search-panel .search-suggestions {
+    position: static;
+    box-shadow: none;
+    border: 1px solid rgba(0,0,0,0.06);
+    max-height: 240px;
+    overflow: auto;
+    margin-top: 0.5rem;
+    border-radius: 0.375rem;
+  }
+}
+
+/* Dark / Light theme overrides (basic) */
+body.dark { background-color: #0b1220; color: #e6eef8; }
+body.dark header { background-color: #064e3b !important; }
+body.dark .bg-white { background-color: #0f1724 !important; }
+body.dark .text-gray-700, body.dark .text-gray-600, body.dark .text-gray-800 { color: #cbd5e1 !important; }
+body.dark .border { border-color: rgba(255,255,255,0.06) !important; }
+body.dark .glass { background: rgba(2,6,23,0.6) !important; color: #e6eef8 !important; }
+body.dark .product-img { background-color: #071127 !important; }
+body.dark a, body.dark p, body.dark span, body.dark h1, body.dark h2, body.dark h3, body.dark h4 { color: #e6eef8 !important; }
+/* Ensure modal looks good in dark mode */
+body.dark #productModal .bg-white { background: #071127 !important; }
+/* Ensure cart modal footer matches dark theme */
+body.dark #cartModal .bg-gray-50 { background-color: #071127 !important; color: #e6eef8 !important; }
+body.dark #cartModal .border-t { border-color: rgba(255,255,255,0.06) !important; }
+/* Improve form and panel readability in dark mode */
+body.dark input, body.dark textarea, body.dark select { background-color: #071127 !important; color: #e6eef8 !important; border-color: rgba(255,255,255,0.12) !important; }
+body.dark input::placeholder, body.dark textarea::placeholder { color: rgba(230,238,248,0.6) !important; }
+/* Make the contact card / location panel readable when using Tailwind gradient class */
+body.dark .bg-gradient-to-br.from-green-50 { background: linear-gradient(180deg, rgba(2,6,23,0.6), rgba(15,23,36,0.6)) !important; color: #e6eef8 !important; }
+/* Ensure bordered controls are visible */
+body.dark .rounded-md.border { border-color: rgba(255,255,255,0.12) !important; }
+/* Combined logo (behave like one image) */
+.combined-logo { display: flex; gap: 0; align-items: stretch; justify-content: stretch; overflow: hidden; border-radius: 0.5rem; cursor: pointer; }
+.combined-logo > .half { flex: 1 1 50%; display:flex; align-items:center; justify-content:center; padding: 1rem; background: transparent; }
+.combined-logo img { max-width: 92%; height: auto; object-fit: contain; display:block; }
+.combined-logo:focus, .combined-logo:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.12); transform: translateY(-1px); }
+@media (max-width:420px){ .combined-logo img{ max-width:80%; } .combined-logo > .half{ padding: .75rem; } }
+/* Ensure in-page anchor targets are visible below the fixed header */
+[id] { scroll-margin-top: var(--afya-header-offset, 100px); }
+
+/* Strong override: ensure add-to-cart / send-order buttons remain green inside modals in dark mode
+   This comes after other modal footer rules to override their transparent settings. */
+body.dark #cartModal .bg-gray-50 button.add-to-cart,
+body.dark #cartModal .bg-gray-50 .send-order-btn,
+body.dark #cartModal button.add-to-cart,
+body.dark #cartModal .send-order-btn {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+body.dark #productModal button.add-to-cart,
+body.dark #productModal .send-order-btn {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Pale red Cancel buttons (cart modal and similar) */
+#cartCloseBtn, .cancel-btn {
+  background-color: #fee2e2 !important; /* very light red */
+  color: #b91c1c !important; /* red-700 */
+  border-color: #fecaca !important; /* red-200 */
+}
+#cartCloseBtn:hover, .cancel-btn:hover {
+  background-color: #fecaca !important;
+}
+
+/* Dark-mode variant for cancel buttons inside modals */
+body.dark #cartCloseBtn, body.dark .cancel-btn {
+  background-color: rgba(185,28,28,0.12) !important;
+  color: #fecaca !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Stronger dark-mode override to force pale-red cancel button in cart modal */
+body.dark #cartModal button#cartCloseBtn,
+body.dark #cartModal .cancel-btn,
+body.dark #cartModal .bg-gray-50 #cartCloseBtn {
+  background-color: rgba(254,226,226,0.12) !important; /* pale red */
+  color: #b91c1c !important; /* red-700 for contrast */
+  border-color: rgba(254,202,202,0.18) !important;
+}
+body.dark #cartModal button#cartCloseBtn:hover,
+body.dark #cartModal .cancel-btn:hover {
+  background-color: rgba(254,202,202,0.18) !important;
+}
+
+
+/* Stronger dark-mode overrides specifically for the cart modal footer
+   Use high specificity and !important to override utility classes. */
+body.dark #cartModal .bg-gray-50,
+body.dark #cartModal .modal-footer,
+body.dark #cartModal footer,
+body.dark #cartModal .bg-white > .border-t,
+body.dark #cartModal .bg-white .bg-gray-50 {
+  background-color: #071127 !important;
+  color: #e6eef8 !important;
+}
+
+/* Ensure all text inside the footer is readable */
+body.dark #cartModal .bg-gray-50, body.dark #cartModal .bg-gray-50 * {
+  color: #e6eef8 !important;
+}
+
+/* Make buttons/links in the footer clearly visible on dark background */
+body.dark #cartModal .bg-gray-50 button,
+body.dark #cartModal .bg-gray-50 a,
+body.dark #cartModal .bg-gray-50 .btn {
+  background: transparent !important;
+  color: #e6eef8 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* Slightly lift primary-style buttons so they remain distinct but readable */
+body.dark #cartModal .bg-gray-50 .btn-primary,
+body.dark #cartModal .bg-gray-50 .btn-primary:hover {
+  background-color: rgba(255,255,255,0.06) !important;
+  color: #e6eef8 !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+/* Re-affirm border-top color for the footer */
+body.dark #cartModal .border-t { border-color: rgba(255,255,255,0.06) !important; }
+
+/* Mobile slide-down search panel */
+.mobile-search-panel { overflow: hidden; transition: max-height 280ms ease, padding 280ms ease; max-height: 0; }
+.mobile-search-panel { position: relative; }
+.mobile-search-panel.hidden { display: none; }
+.mobile-search-panel.open { display: block; max-height: 320px; }
+.mobile-search-panel input[type="search"], .mobile-search-panel select { min-height: 44px; }
+
+/* Left mobile sidebar: hidden off-canvas by default; slides in when `.expanded` */
+#mobileSidebar { transform: translateX(-100%); width: 64px; transition: transform 260ms cubic-bezier(.2,.8,.2,1); }
+/* Ensure default (light) sidebar background and text color so it doesn't appear dark when theme is light */
+#mobileSidebar { background-color: #ffffff !important; color: #064e3b !important; }
+
+/* Collapsed (icons-only) state: narrow, hide labels */
+/* Collapsed state keeps the sidebar hidden off-canvas */
+#mobileSidebar.collapsed { width: 64px !important; transform: translateX(-100%) !important; }
+#mobileSidebar.collapsed nav a { justify-content: center; }
+#mobileSidebar.collapsed nav a .sidebarLabel { display: none !important; }
+#mobileSidebar.collapsed .p-4 { padding-left: 6px; padding-right: 6px; }
+
+/* Sidebar controls: show icons in collapsed state, full controls when expanded */
+#mobileSidebar .sidebar-controls .sidebar-icons { display: none; }
+#mobileSidebar.collapsed .sidebar-controls .full-control { display: none !important; }
+#mobileSidebar.collapsed .sidebar-controls .sidebar-icons { display: flex !important; flex-direction: column; gap: 0.5rem; padding: 0.5rem 0; }
+/* Keep the small icon-only controls visible even when the sidebar is expanded
+  so users retain quick-access icons alongside the full controls. Keep them
+  vertically stacked to match the collapsed layout. */
+#mobileSidebar.expanded .sidebar-controls .sidebar-icons { display: none !important; }
+
+/* Style icon buttons to match vertical nav items when collapsed */
+#mobileSidebar.collapsed .sidebar-controls .sidebar-icons button { width: 100%; display: flex; align-items: center; justify-content: center; padding: 0.5rem 0; border-radius: 0.375rem; }
+#mobileSidebar.collapsed .sidebar-controls .sidebar-icons button:hover { background-color: rgba(4,120,87,0.06); }
+
+/* Flag icon sizing used in expanded sidebar buttons */
+.flag-icon { width: 20px; height: 14px; display: inline-block; vertical-align: middle; }
+.flag-btn { display: inline-flex; align-items: center; gap: 0.5rem; }
+.flag-btn svg { width: 20px; height: 14px; display: block; }
+
+/* Container that surrounds the flag SVG to match the theme button appearance */
+.flag-container { display: inline-flex; align-items: center; justify-content: center; padding: 0.25rem 0.5rem; border: 1px solid rgba(4,120,87,0.12); border-radius: 0.375rem; background: #ffffff; }
+.flag-container:hover { background: rgba(4,120,87,0.04); }
+body.dark .flag-container { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.06); }
+
+/* Label next to control icons in expanded sidebar */
+.control-label { margin-left: 0.5rem; font-size: 0.95rem; color: #064e3b; }
+.theme-icon { width: 20px; height: 20px; display: inline-block; vertical-align: middle; }
+/* Layout for full controls in expanded sidebar */
+.full-control { display: flex; align-items: center; gap: 0.5rem; }
+body.dark .control-label { color: #e6eef8; }
+
+/* Expanded state: show labels and full width
+  Reduce width to improve content space when sidebar is open
+  (was 16rem previously)
+  NOTE: keep units in `rem` so Tailwind/typography scale remains predictable
+  and also update `body.sidebar-open` padding-left below to match this value.
+  Set to 18rem (288px) by default; responsive overrides follow */
+#mobileSidebar.expanded { width: 18rem !important; }
+#mobileSidebar.expanded { transform: translateX(0) !important; }
+#mobileSidebar.expanded nav a { justify-content: flex-start; }
+#mobileSidebar.expanded nav a .sidebarLabel { display: inline-block !important; }
+
+/* Responsive widths for the expanded sidebar so labels fit on different devices */
+@media (max-width: 420px) {
+  /* On very small phones use most of the viewport so items remain readable */
+  #mobileSidebar.expanded { width: 80% !important; }
+  /* Make sure labels have room (use percentage calc) */
+  #mobileSidebar.expanded nav a .sidebarLabel { max-width: calc(80% - 56px) !important; }
+}
+
+@media (min-width: 421px) and (max-width: 639px) {
+  /* Narrow phones / small devices: slightly smaller fixed width */
+  #mobileSidebar.expanded { width: 14rem !important; }
+  #mobileSidebar.expanded nav a .sidebarLabel { max-width: calc(14rem - 56px) !important; }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  /* Larger phones / small tablets: keep a comfortable width */
+  #mobileSidebar.expanded { width: 16rem !important; }
+  #mobileSidebar.expanded nav a .sidebarLabel { max-width: calc(16rem - 56px) !important; }
+}
+#mobileSidebar.translate-x-0 { transform: translateX(0); }
+#mobileSidebar.-translate-x-full { transform: translateX(-100%); }
+#mobileSidebar { transition: transform 260ms cubic-bezier(.2,.8,.2,1); }
+#mobileSidebar nav a { color: #064e3b; }
+#mobileSidebarOverlay { transition: opacity 160ms ease; }
+
+/* Ensure each nav item icon sits to the left of the label and the label
+  stays on a single horizontal line. Icons get a fixed space so labels align. */
+#mobileSidebar nav a svg, #mobileSidebar nav a img { flex: 0 0 20px; width: 20px; height: 20px; margin-right: 0.6rem; display: inline-block; }
+#mobileSidebar nav a { align-items: center; }
+
+/* When the mobile sidebar is expanded, push the page content instead of overlaying it.
+   This applies only on small screens where the sidebar is visible (md:hidden). */
+@media (max-width: 767px) {
+  /* Push layout: when sidebar is expanded we add `sidebar-open` to the
+    body (handled by JS). That shifts page content to the right instead of
+    overlaying it. */
+  /* Overlay behavior: show a dim overlay under the sidebar when expanded.
+     The overlay element is toggled by JS by adding/removing the `hidden` class. */
+  #mobileSidebarOverlay { display: none; pointer-events: none; opacity: 0; transition: opacity 160ms ease; }
+  #mobileSidebarOverlay:not(.hidden) { display: block; pointer-events: auto; opacity: 1; }
+
+  /* Ensure the sidebar sits above the overlay and page content */
+  #mobileSidebar { z-index: 9999; }
+
+  /* Keep fixed header/topAds at full width (do not offset them) when sidebar opens */
+  #siteHeader.site-fixed { left: 0; right: 0; }
+  #topAds.top-fixed { left: 0; right: 0; }
+}
+
+@media (min-width: 768px) {
+  /* hide mobile sidebar on md+ */
+  #mobileSidebar, #mobileSidebarOverlay { display: none !important; }
+}
+
+/* Dark theme for sidebar */
+body.dark #mobileSidebar { background: #071127 !important; color: #e6eef8 !important; }
+body.dark #mobileSidebar nav a { color: #e6eef8 !important; }
+body.dark #mobileSidebar .header-logo img { filter: brightness(0) invert(1); }
