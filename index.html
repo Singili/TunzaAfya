@@ -12,14 +12,14 @@
 </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tunza Afya yako - Natural Wellness</title>
+  <title>Tunza Afya Yako - Natural Wellness</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="tailwind.js"></script>
   <style>
     /* Product cards: fixed height box, fill the box while keeping aspect and center the crop */
     .product-img {
       width: 100%;
-      height: fit-content;
+      height: auto;
       display: block;
       object-fit: cover;
       object-position: center;
@@ -51,15 +51,23 @@
       overflow: auto;
     }
 
-    /* Product modal image: show full image without cropping, limit height to viewport */
+    /* Product modal image: show full image without cropping, limit height to viewport
+       Reduced max-height to preserve more space for the description below. */
     #modalImg {
       width: 100%;
       height: auto;
-      max-height: 50vh;
+      max-height: 28vh;
       object-fit: contain;
       display: block;
+      margin-top: 0;
+      margin-bottom: 0;
       background-color: #fff;
+      transition: max-height 260ms ease, transform 260ms ease;
     }
+    /* Shrunk state for modal image when user scrolls description */
+    #modalImg.img-shrunk { max-height: 12vh !important; transform: translateY(-2px); }
+    /* Shrunk state for carousel images */
+    .carousel-slide img.img-shrunk { max-height: 12vh !important; transform: translateY(-2px); }
 
   .glass { background: rgba(255,255,255,0.85); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
     /* Floating buttons: explicit stacking to avoid overlap */
@@ -76,6 +84,21 @@
     #topAdImg { transition: opacity .35s ease; display: block; }
     #topAds .top-ad-hidden { opacity: 0; }
     #topAds .top-ad-visible { opacity: 1; }
+    
+    /* Product image carousel styles */
+    #carouselContainer { position: relative; width: 100%; display: none; background-color: #f8fafc; }
+    #carouselInner { position: relative; width: 100%; overflow: hidden; }
+    #carouselSlides { display: flex; transition: transform 0.5s ease-in-out; }
+    .carousel-slide { min-width: 100%; display: flex; align-items: center; justify-content: center; min-height: 300px; }
+    .carousel-slide img { width: 100%; height: auto; max-height: 50vh; object-fit: contain; display: block; transition: max-height 260ms ease, transform 260ms ease; will-change: max-height, transform; }
+    /* When shrinking, allow carousel slides to collapse so images reduce space like single-image modals */
+    #carouselInner.carousel-shrunk { height: auto !important; }
+    #carouselInner.carousel-shrunk .carousel-slide { min-height: 0 !important; }
+    #carouselInner.carousel-shrunk .carousel-slide img { max-height: 12vh !important; transform: translateY(-2px); }
+    .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background-color: rgba(0,0,0,0.3); margin: 0 4px; cursor: pointer; transition: background-color 0.3s; }
+    .carousel-dot.active { background-color: rgba(0,0,0,0.7); }
+    #carouselDots { display: flex; justify-content: center; padding: 12px; gap: 2px; background-color: #f8fafc; }
+    #carouselPrev:hover, #carouselNext:hover, #carouselPause:hover { background: rgba(0,0,0,0.7) !important; }
     @media (max-width: 640px) {
       #topAds .w-24 { width: 72px; height: 72px; }
       #topAds { padding-top: .5rem; padding-bottom: .5rem; }
@@ -83,9 +106,13 @@
     }
 
     /* Mobile / small device tweaks */
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
       /* limit product image height for consistent cards */
-      .product-img { max-height: 220px; object-fit: cover; }
+      /* On small screens avoid cropping product images: show full image and keep aspect ratio */
+      .product-img { max-height: none !important; height: auto !important; object-fit: contain !important; }
+
+      /* Ensure product images have a reasonable minimum visible height on narrow screens */
+      .product-img { min-height: 120px; }
 
       /* Stack product action buttons vertically for easier tapping */
       #productGrid .mt-3.flex { flex-direction: column; }
@@ -102,6 +129,11 @@
       #waFloat { right: 12px; bottom: 12px; }
       #cartFloat { right: 12px; bottom: 72px; }
       #cartToast { right: 12px; bottom: 132px; }
+    }
+
+    /* Extra mobile-safe rule for very small devices to avoid cropped product cards */
+    @media (max-width:420px){
+      .product-img { min-height: 140px; }
     }
 
     /* Dark / Light theme overrides (basic) */
@@ -138,13 +170,10 @@
   <header id="siteHeader" class="bg-green-700 text-white">
     <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between relative">
       <div class="flex items-center gap-3">
-        <button id="sidebarBtn" aria-label="Open sidebar" aria-expanded="false" style="z-index:11001;" class="md:hidden relative inline-flex items-center justify-center p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white mr-2" title="Menu">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h14v4H3V4zm0 6h10v4H3v-4zm0 6h6v4H3v-4z"/></svg>
-        </button>
-  <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.jpg" alt="Tunza Afya yako logo"></div>
+  <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-green-700 font-bold header-logo"><img src="images/logo.jpg" alt="Tunza Afya Yako logo"></div>
         <div>
-          <h1 id="siteTitle" class="text-lg font-semibold">Tunza Afya yako</h1>
-          <p id="siteTag" class="text-xs opacity-90">Natural wellness • Authentic Eternal International products</p>
+          <h1 id="siteTitle" class="text-lg font-semibold">Tunza Afya Yako</h1>
+          <p id="siteTag" class="text-xs opacity-90">Natural wellness</p>
         </div>
       </div>
       <!-- Desktop nav removed -->
@@ -166,6 +195,10 @@
       <div class="md:hidden flex items-center gap-2 absolute right-4 top-1/2 transform -translate-y-1/2 z-50">
         <button id="mobileSearchBtn" aria-label="Search" class="inline-flex items-center justify-center p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white" title="Search">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/></svg>
+        </button>
+        <button id="sidebarBtn" aria-label="Open sidebar" aria-expanded="false" style="z-index:11001;" class="md:hidden relative inline-flex items-center p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-white mr-2" title="Menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h14v4H3V4zm0 6h10v4H3v-4zm0 6h6v4H3v-4z"/></svg>
+          <span id="mobileMenuTitle" class="ml-2 text-white font-semibold">Menu</span>
         </button>
       </div>
       <!-- Mobile nav (hidden by default) -->
@@ -309,7 +342,7 @@
   <!-- Hero -->
   <section class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8 items-center">
     <div class="space-y-4">
-      <h2 id="heroTitle" class="text-3xl font-extrabold text-green-800">Welcome to Tunza Afya yako</h2>
+      <h2 id="heroTitle" class="text-3xl font-extrabold text-green-800">Welcome to Tunza Afya Yako</h2>
       <p id="heroDesc" class="text-gray-700">Authentic herbal supplements from Eternal International. Discover natural solutions for weight management, detoxification, immunity support and everyday wellbeing.</p>
       <div class="flex gap-3">
         <a href="#products" class="bg-green-700 text-white px-4 py-2 rounded-md shadow" id="shopBtn">Shop Products</a>
@@ -317,9 +350,9 @@
       </div>
     </div>
     <div class="rounded-lg overflow-hidden shadow-lg bg-white p-0">
-      <a href="#products" class="combined-logo h-56 md:h-64" role="img" aria-label="Tunza Afya yako and Eternal International partnership">
+      <a href="#products" class="combined-logo h-56 md:h-64" role="img" aria-label="Tunza Afya Yako and Eternal International partnership">
         <div class="half" aria-hidden="false">
-          <img src="images/logo.jpg" alt="Tunza Afya yako" />
+          <img src="images/logo.jpg" alt="Tunza Afya Yako" />
         </div>
         <div class="half" aria-hidden="false">
           <img src="images/eternal-logo.png" alt="Eternal International" />
@@ -331,8 +364,8 @@
   <!-- About -->
   <section id="about-us" class="max-w-6xl mx-auto px-4 py-6">
     <div class="glass p-6 rounded-lg shadow-sm">
-      <h3 id="aboutTitle" class="text-2xl font-semibold text-green-800">About Tunza Afya yako</h3>
-      <p id="aboutDesc" class="mt-3 text-gray-700">Tunza Afya yako promotes natural wellness through safe, effective, and science-supported supplements. As an authorized Eternal International partner, we supply premium herbal products for weight management, detoxification, immune support, and sustained energy — backed by clear guidance and ongoing customer care.</p>
+      <h3 id="aboutTitle" class="text-2xl font-semibold text-green-800">About Tunza Afya Yako</h3>
+      <p id="aboutDesc" class="mt-3 text-gray-700">Tunza Afya Yako sells authentic Eternal International herbal supplements and provides basic health checkups. We help with weight management, detox, immunity, energy and reproductive health. We give clear usage guidance, personalised advice, and ongoing support. Order via WhatsApp — local delivery available.</p>
     </div>
   </section>
 
@@ -389,7 +422,7 @@
           <textarea name="message" placeholder="Message / Order details" class="w-full px-3 py-2 rounded-md border" rows="4"></textarea>
           <div class="flex gap-3">
             <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded-md">Send Message</button>
-            <a id="waQuick" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20yako" class="inline-flex items-center gap-2 border border-green-700 text-green-700 px-4 py-2 rounded-md">Quick WhatsApp</a>
+            <a id="waQuick" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20Yako" class="inline-flex items-center gap-2 border border-green-700 text-green-700 px-4 py-2 rounded-md">Quick WhatsApp</a>
           </div>
         </form>
         <p id="formStatus" class="mt-3 text-sm text-gray-600"></p>
@@ -400,7 +433,7 @@
         <p id="locationDesc" class="mt-2 text-gray-600">Based in Tanzania / East Africa. Local delivery available. For shipping outside local area, contact us on WhatsApp.</p>
         <div class="mt-4">
           <p id="openHours" class="text-sm text-gray-600">Open: Mon–Sun • 24 hrs</p>
-          <p id="locationPhone" class="text-sm text-gray-600">Phone/WhatsApp: +255 692 538 955</p>
+          <p id="locationPhone" class="text-sm text-gray-600">Phone/WhatsApp: +255683681356</p>
         </div>
       </div>
     </div>
@@ -411,23 +444,23 @@
     <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-start md:items-center text-sm gap-4 md:gap-0">
       <div>
         <h5 id="footerContactTitle" class="font-semibold">Contact Us</h5>
-        <p id="footerPhone">Phone/WhatsApp: +255 692 538 955</p>
-        <p id="footerEmail">Email: tunzaafya@gmail.com</p>
-        <p id="footerFacebook"><a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a></p>
-        <p id="footerInstagram"><a href="#" class="underline">Instagram: tunza_afya</a></p>
+        <p id="footerPhone">Phone/WhatsApp: +255683681356</p>
+        <p id="footerEmail">Email: singiligasamalu@gmail.com</p>
+        <p id="footerFacebook"><a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a></p>
+        <p id="footerInstagram"><a href="#" class="underline">Instagram: afya_asilia</a></p>
       </div>
       <div>
         <h5 id="footerLocationTitle" class="font-semibold">Location</h5>
         <p id="footerLocationText">Tanzania, East Africa</p>
       </div>
       <div>
-        <p id="footerCopyright">© Tunza Afya yako — Authorized Eternal International Partner</p>
+        <p id="footerCopyright">© Tunza Afya Yako — Authorized Eternal International Partner</p>
       </div>
     </div>
   </footer>
 
   <!-- WhatsApp floating button -->
-  <a id="waFloat" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20yako" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
+  <a id="waFloat" href="https://api.whatsapp.com/send?phone=255683681356&text=Hello,%20I%20want%20to%20order%20from%20Tunza%20Afya%20Yako" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="w-12 h-12" /></a>
   <!-- Floating cart submit button -->
   <button id="cartFloat" class="hidden fixed bottom-28 right-5 bg-green-600 text-white rounded-full p-3 shadow-lg flex items-center gap-2" title="Open cart">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 6h13"/></svg>
@@ -440,23 +473,32 @@
   <!-- Product details modal -->
   <div id="productModal" class="hidden fixed inset-0 flex items-center justify-center" style="z-index:20000;">
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeProductModal()"></div>
-    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full overflow-hidden product-modal" style="z-index:20001;">
+    <div class="bg-white rounded-lg shadow-lg max-w-lg w-full overflow-hidden product-modal" style="z-index:20001; max-height:90vh; display:flex; flex-direction:column;">
       <div class="p-4 flex justify-between items-start modal-header">
         <h4 id="modalTitle" class="font-semibold text-green-800"></h4>
         <button onclick="closeProductModal()" aria-label="Close" class="text-gray-500 text-2xl leading-none">&times;</button>
       </div>
+      <div id="carouselContainer">
+        <div id="carouselInner" style="position: relative;">
+          <div id="carouselSlides"></div>
+          <button id="carouselPrev" type="button" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; z-index: 10;">❮</button>
+          <button id="carouselNext" type="button" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; z-index: 10;">❯</button>
+          <button id="carouselPause" type="button" style="position: absolute; right: 8px; bottom: 8px; background: rgba(0,0,0,0.5); color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; z-index: 10;">⏸ Pause</button>
+        </div>
+        <div id="carouselDots"></div>
+      </div>
       <img id="modalImg" src="" alt="" class="w-full modal-image"/>
-      <div class="p-4 modal-body">
+      <div class="p-4 modal-body" style="flex:1 1 auto; overflow:auto; padding-top:0; padding-bottom:3.75rem;">
         <p id="modalPrice" class="font-medium text-gray-700"></p>
         <!-- Make the description area scrollable when content is long -->
-        <div id="modalDescWrapper" class="mt-2">
+        <div id="modalDescWrapper" class="mt-2" style="max-height:45vh; overflow-y:auto;">
           <p id="modalDesc" class="text-gray-600"></p>
         </div>
       </div>
-      <div class="p-4 modal-footer border-t">
-        <div class="flex gap-2 w-full">
-          <button id="modalOrder" type="button" class="flex-1 inline-block text-center px-3 py-2 border rounded-md add-to-cart send-order-btn">Add to cart</button>
-          <a id="modalExplore" href="#products" onclick="exploreMoreProducts(event)" class="inline-block text-center px-3 py-2 border rounded-md">Explore more products</a>
+      <div class="modal-footer border-t" style="position:sticky;bottom:0;background:inherit;z-index:5;padding:0.5rem 1rem;">
+        <div class="flex gap-2 w-full" style="align-items:center;">
+          <button id="modalOrder" type="button" class="flex-1 inline-block text-center px-3 py-2 border rounded-md add-to-cart send-order-btn" style="padding-top:0.5rem;padding-bottom:0.5rem;">Add to cart</button>
+          <a id="modalExplore" href="#products" onclick="exploreMoreProducts(event)" class="inline-block text-center px-3 py-2 border rounded-md" style="padding-top:0.5rem;padding-bottom:0.5rem;">Explore more products</a>
         </div>
       </div>
     </div>
@@ -497,13 +539,143 @@
       </div>
 
       <script>
+    let currentCarouselIndex = 0;
+    let carouselAutoScrollInterval = null;
+    let carouselTotalSlides = 0;
+    let carouselIsPaused = false;
+    
+    function initCarousel(images) {
+      const container = document.getElementById('carouselContainer');
+      const slides = document.getElementById('carouselSlides');
+      const dots = document.getElementById('carouselDots');
+      const prevBtn = document.getElementById('carouselPrev');
+      const nextBtn = document.getElementById('carouselNext');
+      const pauseBtn = document.getElementById('carouselPause');
+      
+      if (!container || !slides || !dots) return;
+      
+      stopCarouselAutoScroll();
+      slides.innerHTML = '';
+      dots.innerHTML = '';
+      currentCarouselIndex = 0;
+      carouselTotalSlides = images.length;
+      carouselIsPaused = false;
+      
+      images.forEach((imgPath, idx) => {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+        const img = document.createElement('img');
+        img.src = imgPath;
+        img.alt = 'Product image ' + (idx + 1);
+        img.style.cursor = 'pointer';
+        img.onclick = () => {
+          toggleCarouselPause();
+        };
+        slide.appendChild(img);
+        slides.appendChild(slide);
+        
+        const dot = document.createElement('div');
+        dot.className = 'carousel-dot' + (idx === 0 ? ' active' : '');
+        dot.onclick = () => {
+          goToSlide(idx);
+          if (!carouselIsPaused) startCarouselAutoScroll();
+        };
+        dots.appendChild(dot);
+      });
+      
+      // Add click handlers to prev/next buttons
+      if (prevBtn) prevBtn.onclick = () => {
+        goToSlide(currentCarouselIndex - 1);
+        if (!carouselIsPaused) startCarouselAutoScroll();
+      };
+      if (nextBtn) nextBtn.onclick = () => {
+        goToSlide(currentCarouselIndex + 1);
+        if (!carouselIsPaused) startCarouselAutoScroll();
+      };
+      
+      // Add pause/play button handler
+      if (pauseBtn) {
+        pauseBtn.onclick = () => {
+          toggleCarouselPause();
+        };
+      }
+      
+      // Start auto-scroll
+      startCarouselAutoScroll();
+    }
+    
+    function toggleCarouselPause() {
+      carouselIsPaused = !carouselIsPaused;
+      const pauseBtn = document.getElementById('carouselPause');
+      if (carouselIsPaused) {
+        stopCarouselAutoScroll();
+        if (pauseBtn) pauseBtn.textContent = '▶ Play';
+      } else {
+        if (pauseBtn) pauseBtn.textContent = '⏸ Pause';
+        startCarouselAutoScroll();
+      }
+    }
+    
+    function goToSlide(index) {
+      const slides = document.getElementById('carouselSlides');
+      const dots = document.querySelectorAll('.carousel-dot');
+      if (dots.length === 0) return;
+      currentCarouselIndex = ((index % dots.length) + dots.length) % dots.length;
+      slides.style.transform = 'translateX(' + (-currentCarouselIndex * 100) + '%)';
+      dots.forEach((dot, idx) => {
+        if (idx === currentCarouselIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+    
+    function nextSlide() {
+      if (carouselTotalSlides <= 0 || carouselIsPaused) return;
+      currentCarouselIndex = (currentCarouselIndex + 1) % carouselTotalSlides;
+      const slides = document.getElementById('carouselSlides');
+      slides.style.transform = 'translateX(' + (-currentCarouselIndex * 100) + '%)';
+      const dots = document.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentCarouselIndex) dot.classList.add('active');
+        else dot.classList.remove('active');
+      });
+    }
+    
+    function startCarouselAutoScroll() {
+      if (carouselTotalSlides <= 1 || carouselIsPaused) return;
+      stopCarouselAutoScroll();
+      carouselAutoScrollInterval = setInterval(() => {
+        nextSlide();
+      }, 10000);
+    }
+    
+    function stopCarouselAutoScroll() {
+      clearInterval(carouselAutoScrollInterval);
+      carouselAutoScrollInterval = null;
+    }
+    
     function showProductDetails(id, pushState = true) {
       const p = products.find(x => x.id === id);
       if (!p) return;
       document.getElementById('modalTitle').textContent = p.name;
-      const img = document.getElementById('modalImg');
-      img.src = p.img;
-      img.alt = p.name;
+      
+      // Handle multiple images or single image
+      const carouselContainer = document.getElementById('carouselContainer');
+      const modalImg = document.getElementById('modalImg');
+      
+      if (p.images && p.images.length > 1) {
+        // Show carousel for multi-image products
+        carouselContainer.style.display = 'block';
+        modalImg.style.display = 'none';
+        initCarousel(p.images);
+      } else {
+        // Show single image for products with one or no images
+        carouselContainer.style.display = 'none';
+        modalImg.style.cssText = 'display: block; width: 100%;';
+        const imageSrc = (p.images && p.images.length > 0) ? p.images[0] : (p.img || '');
+        modalImg.src = imageSrc;
+        modalImg.alt = p.name;
+      }
+      
   document.getElementById('modalPrice').textContent = p.price;
   // Format modal description: bold headings and put each section on its own line
   const rawDesc = getProductDesc(p) || '';
@@ -563,6 +735,7 @@
     }
 
     function closeProductModal() {
+      stopCarouselAutoScroll();
       document.getElementById('productModal').classList.add('hidden');
       // remove product param from URL without reloading
       try{
@@ -624,9 +797,9 @@
       }catch(e){}
     }
   const products = [
-  { id: 1, name: 'Chrysanthemum Tea', category: 'weight loss', price: 'Tsh 65,000', desc_en: 'What it does: Helps support fat metabolism, improve digestion, and assist toxin elimination. Who it is for: People seeking safe weight loss and better digestion.', desc_sw: 'Inafanya nini: Husaidia kuchochea mmeng`enyo wa mafuta, kuboresha mmeng`enyo wa chakula, na kusaidia kuondoa sumu mwilini. Kwa nani: Watu wanaotaka kupunguza uzito, unene au kitambi kwa njia salama na kuboresha mmeng`enyo.', img: 'images/chrysanthemum-tea.jpg' },
+  { id: 1, name: 'Chrysanthemum Tea', category: 'weight loss', price: 'Tsh 65,000', desc_en: 'What it does: Helps support fat metabolism, improve digestion, and assist toxin elimination. Who it is for: People seeking safe weight loss and better digestion.', desc_sw: 'Inafanya nini: Husaidia kuchochea mmeng`enyo wa mafuta, kuboresha mmeng`enyo wa chakula, na kusaidia kuondoa sumu mwilini. Kwa nani: Watu wanaotaka kupunguza uzito, unene au kitambi kwa njia salama na kuboresha mmeng`enyo.', images: ['images/chrysanthemum-tea.jpg', 'images/antilipemic-tea.jpg', 'images/middle-aged.jpg'], img: 'images/chrysanthemum-tea.jpg' },
 
-    { id: 2, name: 'Purslane Tea', category: 'tea', price: 'Tsh 65,000', desc_en: 'What it does: Supports blood cleansing, helps balance blood sugar and soothes the liver and lungs. Who it is for: People with liver or lung stress, hardworking adults, the elderly, and children.', desc_sw: 'Inafanya nini: Inasaidia kusafisha damu, kupunguza sukari na sumu, na kutuliza ini na mapafu. Kwa nani: Watu wenye msongo wa ini au mapafu, watu wanaofanya kazi ngumu, wazee, na watoto.', img: 'images/purselate-tea.jpg' },
+    { id: 2, name: 'Purslane Tea', category: 'tea', price: 'Tsh 65,000', desc_en: 'What it does: Supports blood cleansing, helps balance blood sugar and soothes the liver and lungs. Who it is for: People with liver or lung stress, hardworking adults, the elderly, and children.', desc_sw: 'Inafanya nini: Inasaidia kusafisha damu, kupunguza sukari na sumu, na kutuliza ini na mapafu. Kwa nani: Watu wenye msongo wa ini au mapafu, watu wanaofanya kazi ngumu, wazee, na watoto.', images: ['images/purselate-tea.jpg', 'images/middle-aged.jpg', 'images/propolis-soft-cap.jpg'], img: 'images/purselate-tea.jpg' },
 
   { id: 3, name: 'Antilipemic Tea', category: 'tea', price: 'Tsh 65,000', desc_en: 'What it does: Helps regulate body fat, support circulation and improve digestion. Who it is for: People wanting to reduce excess fat, support heart health, and increase energy.', desc_sw: 'Inafanya nini: Husaidia kurekebisha kiwango cha mafuta mwilini, kuunga mkono mzunguko wa damu na kuboresha mmeng enyo. Kwa nani: Watu wanaotaka kupunguza mafuta ya ziada, kuunga mkono afya ya moyo, na kuongeza nishati.', img: 'images/antilipemic-tea.jpg' },
   { id: 4, name: 'Middle Aged', category: 'energy', price: 'Tsh 110,000', desc_en: 'What it does: Provides essential vitamins and minerals to support energy, immunity and skin health. Who it is for: Adults needing nutritional support, especially those with low energy or poor diet.', desc_sw: 'Inafanya nini: Inatoa vitamini na madini muhimu kusaidia nishati, kinga na afya ya ngozi. Kwa nani: Watu wazima wanaohitaji msaada wa lishe, hasa wenye nishati ndogo au ulaji duni.', img: 'images/middle-aged.jpg' },
@@ -669,6 +842,106 @@
 
   { id: 24, name: 'Eternal Toothpaste', category: 'oral care', price: 'Tsh 28,500', desc_en: 'What it does: Cleans teeth, helps remove plaque, freshens breath, and supports gum health with gentle herbal extracts. Who it is for: People looking for a natural daily oral-care paste suitable for everyday use.', desc_sw: 'Inafanya nini: Inasafisha meno, husaidia kuondoa plaque, hupatia pumzi safi, na kuunga mkono afya ya fizi kwa dondoo laini za mimea. Kwa nani: Watu wanaotafuta toothpaste ya asili kwa matumizi ya kila siku.', img: 'images/toothpaste.jpeg' }
   ];
+
+    // Shrink/restore the product modal image when the description is scrolled
+    (function(){
+      const ORIGINAL = '28vh';
+      const SHRUNK = '12vh';
+      const THRESHOLD = 10; // px scrolled before shrinking
+      function initShrinkOnScroll(){
+        const modal = document.getElementById('productModal');
+        const modalImg = document.getElementById('modalImg');
+        const desc = document.getElementById('modalDescWrapper');
+        const modalBody = modal ? modal.querySelector('.modal-body') : null;
+        // The element that actually scrolls may be the modal body (we set overflow on it),
+        // so prefer that; fall back to the desc wrapper if needed.
+        const scrollEl = modalBody || desc;
+        if(!modal || !modalImg || !scrollEl) return;
+
+        // Ensure image starts at original size when modal opens
+        const carouselImgs = modal ? Array.from(modal.querySelectorAll('.carousel-slide img')) : [];
+        const carouselInner = modal ? modal.querySelector('#carouselInner') : null;
+        const resetImg = ()=>{
+          modalImg && modalImg.classList.remove('img-shrunk');
+          carouselImgs.forEach(i=>i.classList.remove('img-shrunk'));
+          if(carouselInner) carouselInner.classList.remove('carousel-shrunk');
+        };
+
+        // Observe modal visibility (class changes) to reset image when opened
+        try{
+          const mo = new MutationObserver((mutations)=>{
+            for(const m of mutations){
+              if(m.attributeName === 'class'){
+                if(!modal.classList.contains('hidden')) resetImg();
+              }
+            }
+          });
+          mo.observe(modal, { attributes: true });
+        }catch(e){}
+
+        // Throttled scroll handler using requestAnimationFrame for smoothness
+        let ticking = false;
+        function handleScrollEvent(){
+          if(ticking) return; ticking = true;
+          window.requestAnimationFrame(()=>{
+            if(scrollEl.scrollTop > THRESHOLD){
+              if(modalImg) modalImg.classList.add('img-shrunk');
+              if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.add('img-shrunk'));
+              if(carouselInner) carouselInner.classList.add('carousel-shrunk');
+            } else {
+              if(modalImg) modalImg.classList.remove('img-shrunk');
+              if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.remove('img-shrunk'));
+              if(carouselInner) carouselInner.classList.remove('carousel-shrunk');
+            }
+            ticking = false;
+          });
+        }
+        scrollEl.addEventListener('scroll', handleScrollEvent, { passive: true });
+
+        // Also listen to wheel and touch events on the modal to catch scroll gestures
+        modal.addEventListener('wheel', function(e){
+          if(e.deltaY > 0){
+            if(modalImg) modalImg.classList.add('img-shrunk');
+            if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.add('img-shrunk'));
+            if(carouselInner) carouselInner.classList.add('carousel-shrunk');
+          } else {
+            // only restore if the content is scrolled back to top
+            if(scrollEl.scrollTop <= THRESHOLD){
+              if(modalImg) modalImg.classList.remove('img-shrunk');
+              if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.remove('img-shrunk'));
+              if(carouselInner) carouselInner.classList.remove('carousel-shrunk');
+            }
+          }
+        }, { passive: true });
+
+        // Touch handling for mobile: detect vertical movement
+        let touchStartY = null;
+        modal.addEventListener('touchstart', function(e){ touchStartY = (e.touches && e.touches[0]) ? e.touches[0].clientY : null; }, { passive: true });
+        modal.addEventListener('touchmove', function(e){
+          const y = (e.touches && e.touches[0]) ? e.touches[0].clientY : null;
+          if(touchStartY !== null && y !== null){
+            const dy = touchStartY - y;
+            if(Math.abs(dy) > 6){
+              if(dy > 0){
+                if(modalImg) modalImg.classList.add('img-shrunk');
+                if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.add('img-shrunk'));
+                if(carouselInner) carouselInner.classList.add('carousel-shrunk');
+              } else {
+                // restore only if scrolled back to top
+                if(scrollEl.scrollTop <= THRESHOLD){
+                  if(modalImg) modalImg.classList.remove('img-shrunk');
+                  if(carouselImgs.length) carouselImgs.forEach(i=>i.classList.remove('img-shrunk'));
+                  if(carouselInner) carouselInner.classList.remove('carousel-shrunk');
+                }
+              }
+            }
+          }
+        }, { passive: true });
+      }
+
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initShrinkOnScroll);
+      else initShrinkOnScroll();
+    })();
 
     const productGrid = document.getElementById('productGrid');
     const searchInput = document.getElementById('searchInput');
@@ -913,7 +1186,7 @@
       if(!list) return;
       list.innerHTML = '';
       if(cart.length === 0){
-        const emptyText = (getCurrentLang()==='sw') ? 'Kikapu chako ni wazi.' : 'Your cart is empty.';
+        const emptyText = (getCurrentLang()==='sw') ? 'Kikapu chako ni tupu.' : 'Your cart is empty.';
         list.innerHTML = '<div class="p-3 text-sm text-gray-600">' + escapeHtml(emptyText) + '</div>';
       }
       else {
@@ -994,7 +1267,7 @@
       saveCustomer({ name, phone, email, location });
 
       // Build message including cart items
-      const header = (getCurrentLang() === 'sw') ? '*Oda kutoka Tunza Afya yako:*' : '*Order from Tunza Afya yako:*';
+      const header = (getCurrentLang() === 'sw') ? '*Oda kutoka Tunza Afya Yako:*' : '*Order from Tunza Afya Yako:*';
       const lines = [header, `Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, `Location: ${location}`, '', 'Cart:'];
       if(cart.length === 0) lines.push('- (empty)');
       else {
@@ -1093,7 +1366,7 @@
       saveSubmission(submission);
 
       // Build WhatsApp prefilled message and open
-      const header = (getCurrentLang() === 'sw') ? '*Ombi la Kuwasiliana na Tunza Afya yako:*' : '*Tunza Afya yako contact request:*';
+      const header = (getCurrentLang() === 'sw') ? '*Ombi la Kuwasiliana na Tunza Afya Yako:*' : '*Tunza Afya Yako contact request:*';
       const lines = [header, `Name: ${name}`, `Phone: ${phone}`, `Email: ${email}`, '', 'Message:', message];
       const waText = lines.join('\n');
       const waHref = 'https://api.whatsapp.com/send?phone=255683681356&text=' + encodeURIComponent(waText);
@@ -1120,13 +1393,13 @@
 
     langSwitcher.addEventListener('change', function(){
       if(this.value === 'sw') {
-        document.getElementById('heroTitle').textContent = 'Karibu Tunza Afya yako';
+        document.getElementById('heroTitle').textContent = 'Karibu Tunza Afya Yako';
         document.getElementById('heroDesc').textContent = 'Virutubisho asilia kutoka Eternal International. Gundua suluhisho la asili kwa kudhibiti uzito, kusafisha mwili, kuimarisha kinga na ustawi wa kila siku.';
         document.getElementById('shopBtn').textContent = 'Nunua Bidhaa';
         document.getElementById('contactBtn').textContent = 'Wasiliana Nasi';
         // Header localization - Swahili
-        const siteTitle = document.getElementById('siteTitle'); if(siteTitle) siteTitle.textContent = 'Tunza Afya yako';
-        const siteTag = document.getElementById('siteTag'); if(siteTag) siteTag.textContent = 'Afya ya asili • Bidhaa halali za Eternal International';
+        const siteTitle = document.getElementById('siteTitle'); if(siteTitle) siteTitle.textContent = 'Tunza Afya Yako';
+        const siteTag = document.getElementById('siteTag'); if(siteTag) siteTag.textContent = 'Afya ya asili';
         ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'].forEach(id=>{
           const el = document.getElementById(id); if(!el) return; 
           if(id.toLowerCase().includes('about')) el.textContent = 'Kuhusu';
@@ -1161,8 +1434,8 @@
           const inEmail = document.querySelector('input[name="c_email"]'); if(inEmail) inEmail.placeholder = 'Barua pepe (hiari)';
           const inLoc = document.querySelector('input[name="c_location"]'); if(inLoc) inLoc.placeholder = 'Mahali / Anwani';
         }catch(e){}
-  document.getElementById('aboutTitle').textContent = 'Kuhusu Tunza Afya yako';
-  document.getElementById('aboutDesc').textContent = 'Tunza Afya yako inakuza ustawi wa asili kupitia virutubisho salama, vinavyofanya kazi na vinavyoungwa mkono na tafiti. Kama mshirika rasmi wa Eternal International, tunatoa bidhaa za mimea za ubora kwa ajili ya kudhibiti uzito, kusafisha mwili, kuimarisha kinga na kuongeza nishati. Tunatoa mwongozo wazi na msaada endelevu kwa wateja.';
+  document.getElementById('aboutTitle').textContent = 'Kuhusu Tunza Afya Yako';
+  document.getElementById('aboutDesc').textContent = 'Tunza Afya Yako inauza bidhaa halisi za mimea za Eternal International na pia hutoa uchunguzi wa afya wa msingi. Tunasaidia kwa upunguzaji wa uzito, kusafisha mwili, kuimarisha kinga, kuongeza nishati na afya ya uzazi. Tunatoa maelekezo wazi ya matumizi, ushauri wa kibinafsi na msaada endelevu. Unaweza kuagiza kupitia WhatsApp — utoaji wa ndani unapatikana.';
         document.getElementById('productsTitle').textContent = 'Bidhaa Zetu';
         document.getElementById('contactTitle').textContent = 'Wasiliana / Agiza';
         document.getElementById('contactDesc').textContent = 'Jaza fomu au tumia WhatsApp kuweka oda. Tutajibu ndani ya masaa machache.';
@@ -1186,20 +1459,20 @@
         document.getElementById('what3Desc').textContent = 'Uwasilishaji wa ndani, chaguzi za usafirishaji kitaifa, na msaada baada ya mauzo.';
   // Footer localization - Swahili
   document.getElementById('footerContactTitle').textContent = 'Wasiliana Nasi';
-  document.getElementById('footerPhone').textContent = 'Simu/WhatsApp: +255 683 681 356';
-  document.getElementById('footerEmail').textContent = 'Barua pepe: afyaasilia@gmail.com';
-  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a>';
+  document.getElementById('footerPhone').textContent = 'Simu/WhatsApp: +255683681356';
+  document.getElementById('footerEmail').textContent = 'Barua pepe: singiligasamalu@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a>';
   document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
   document.getElementById('footerLocationTitle').textContent = 'Mahali';
   document.getElementById('footerLocationText').textContent = 'Tanzania, Afrika Mashariki';
-  document.getElementById('footerCopyright').textContent = '© Tunza Afya yako — Mshirika rasmi wa Eternal International';
+  document.getElementById('footerCopyright').textContent = '© Tunza Afya Yako — Mshirika rasmi wa Eternal International';
       } else {
-        document.getElementById('heroTitle').textContent = 'Welcome to Tunza Afya yako';
+        document.getElementById('heroTitle').textContent = 'Welcome to Tunza Afya Yako';
         document.getElementById('heroDesc').textContent = 'Authentic herbal supplements from Eternal International. Discover natural solutions for weight management, detoxification, immunity support and everyday wellbeing.';
   document.getElementById('shopBtn').textContent = 'Shop Products';
   document.getElementById('contactBtn').textContent = 'Contact Us';
   // Header localization - English
-  const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Tunza Afya yako';
+  const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Tunza Afya Yako';
   const siteTagEn = document.getElementById('siteTag'); if(siteTagEn) siteTagEn.textContent = 'Natural wellness • Authentic Eternal International products';
   const headerIds = ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'];
   headerIds.forEach(id=>{ const el = document.getElementById(id); if(!el) return; if(id.toLowerCase().includes('about')) el.textContent = 'About'; else if(id.toLowerCase().includes('what')) el.textContent = 'What we do'; else if(id.toLowerCase().includes('products')) el.textContent = 'Products'; else if(id.toLowerCase().includes('contact')) el.textContent = 'Contact'; });
@@ -1230,8 +1503,8 @@
       const inEmailEn = document.querySelector('input[name="c_email"]'); if(inEmailEn) inEmailEn.placeholder = 'Email (optional)';
       const inLocEn = document.querySelector('input[name="c_location"]'); if(inLocEn) inLocEn.placeholder = 'Location / Address';
     }catch(e){}
-  document.getElementById('aboutTitle').textContent = 'About Tunza Afya yako';
-  document.getElementById('aboutDesc').textContent = 'Tunza Afya yako promotes natural wellness through safe, effective, and science-supported supplements. As an authorized Eternal International partner, we supply premium herbal products for weight management, detoxification, immune support, and sustained energy — backed by clear guidance and ongoing customer care.';
+  document.getElementById('aboutTitle').textContent = 'About Tunza Afya Yako';
+  document.getElementById('aboutDesc').textContent = 'Tunza Afya Yako sells authentic Eternal International herbal supplements and offers basic health checkups. We support weight management, detox, immunity, energy and reproductive health. We provide clear usage guidance, personalised advice, and ongoing support. Order via WhatsApp — local delivery available.';
         document.getElementById('productsTitle').textContent = 'Our Products';
         document.getElementById('contactTitle').textContent = 'Get in touch / Order';
         document.getElementById('contactDesc').textContent = 'Fill the form or use WhatsApp to place your order. We will reply within a few hours.';
@@ -1255,13 +1528,13 @@
         document.getElementById('what3Desc').textContent = 'Local delivery, nationwide shipping options, and after-sale support to track progress and answer questions.';
   // Footer localization - English
   document.getElementById('footerContactTitle').textContent = 'Contact Us';
-  document.getElementById('footerPhone').textContent = 'Phone/WhatsApp: +255 683 681 356';
-  document.getElementById('footerEmail').textContent = 'Email: afyaasilia@gmail.com';
-  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya yako</a>';
+  document.getElementById('footerPhone').textContent = 'Phone/WhatsApp: +255683681356';
+  document.getElementById('footerEmail').textContent = 'Email: singiligasamalu@gmail.com';
+  document.getElementById('footerFacebook').innerHTML = '<a href="https://web.facebook.com/profile.php?id=61583949610077" class="underline">Facebook: Tunza Afya Yako</a>';
   document.getElementById('footerInstagram').innerHTML = '<a href="#" class="underline">Instagram: afya_asilia</a>';
   document.getElementById('footerLocationTitle').textContent = 'Location';
   document.getElementById('footerLocationText').textContent = 'Tanzania, East Africa';
-  document.getElementById('footerCopyright').textContent = '© Tunza Afya yako — Authorized Eternal International Partner';
+  document.getElementById('footerCopyright').textContent = '© Tunza Afya Yako — Authorized Eternal International Partner';
       }
       // Re-render products so descriptions update for the selected language
       filterProducts();
