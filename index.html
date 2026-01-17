@@ -1475,7 +1475,7 @@
   document.getElementById('contactBtn').textContent = 'Contact Us';
   // Header localization - English
   const siteTitleEn = document.getElementById('siteTitle'); if(siteTitleEn) siteTitleEn.textContent = 'Tunza Afya Yako';
-  const siteTagEn = document.getElementById('siteTag'); if(siteTagEn) siteTagEn.textContent = 'Natural wellness • Authentic Eternal International products';
+  const siteTagEn = document.getElementById('siteTag'); if(siteTagEn) siteTagEn.textContent = 'Natural wellness';
   const headerIds = ['navAbout','navWhat','navProducts','navContact','mobileAbout','mobileWhat','mobileProducts','mobileContact'];
   headerIds.forEach(id=>{ const el = document.getElementById(id); if(!el) return; if(id.toLowerCase().includes('about')) el.textContent = 'About'; else if(id.toLowerCase().includes('what')) el.textContent = 'What we do'; else if(id.toLowerCase().includes('products')) el.textContent = 'Products'; else if(id.toLowerCase().includes('contact')) el.textContent = 'Contact'; });
   const headerOrderEn = document.getElementById('headerAddToCart'); if(headerOrderEn) headerOrderEn.textContent = 'View cart';
